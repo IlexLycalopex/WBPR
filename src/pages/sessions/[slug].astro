@@ -1,0 +1,230 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import BroadcastBlock from '../../components/BroadcastBlock.astro';
+import PhenomenaTable from '../../components/PhenomenaTable.astro';
+import SessionStats from '../../components/SessionStats.astro';
+
+export async function getStaticPaths() {
+  const sessions = await getCollection('sessions');
+  return sessions.map(s => ({
+    params: { slug: s.id.replace(/\.md$/, '') },
+    props: { session: s },
+  }));
+}
+
+const { session } = Astro.props;
+const { Content } = await render(session);
+const d = session.data;
+
+const formattedDate = new Date(d.date).toLocaleDateString('en-US', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+function veilClass(status: string) {
+  const map: Record<string, string> = {
+    thin: 'veil-badge--thin',
+    normal: 'veil-badge--normal',
+    thick: 'veil-badge--thick',
+    opaque: 'veil-badge--opaque',
+  };
+  return `veil-badge ${map[status.toLowerCase()] ?? 'veil-badge--normal'}`;
+}
+
+// Split rendered content into blocks by splitting on "## Block" headings.
+// We render the full prose content after each block panel.
+// The body sections correspond to blocks in order, plus a final "notes" section.
+---
+
+<Base title={`${d.station} Session ${d.session}`} description={`${d.call_sign} — ${d.location} — ${d.date}`}>
+  <div class="container">
+
+    <header class="session-header">
+      <div class="session-header__meta mono">
+        <span class="session-header__station">{d.station}</span>
+        <span class="session-header__sep">·</span>
+        <span>Session {d.session}</span>
+        <span class="session-header__sep">·</span>
+        <span class={veilClass(d.veil_status)}>{d.veil_status}</span>
+      </div>
+
+      <h1 class="session-header__callsign">{d.call_sign}</h1>
+
+      <div class="session-header__details mono">
+        <span class="session-detail">
+          <span class="session-detail__label">Location</span>
+          <span class="session-detail__value">{d.location}</span>
+        </span>
+        <span class="session-detail">
+          <span class="session-detail__label">Date</span>
+          <span class="session-detail__value">{formattedDate}</span>
+        </span>
+        <span class="session-detail">
+          <span class="session-detail__label">Broadcast</span>
+          <span class="session-detail__value">{d.start_time} – {d.end_time}</span>
+        </span>
+        <span class="session-detail">
+          <span class="session-detail__label">Duration</span>
+          <span class="session-detail__value">{d.duration_minutes} min</span>
+        </span>
+      </div>
+
+      {d.atmospheric_conditions && (
+        <p class="session-header__atmosphere">{d.atmospheric_conditions}</p>
+      )}
+
+      {d.tags.length > 0 && (
+        <ul class="tag-list session-header__tags">
+          {d.tags.map(t => <li><span class="tag">{t}</span></li>)}
+        </ul>
+      )}
+    </header>
+
+    <div class="session-body">
+      <div class="blocks">
+        {d.blocks.map((block, i) => (
+          <BroadcastBlock
+            index={i}
+            time={block.time}
+            prompts={block.prompts}
+            playlist={block.playlist}
+            caller_type={block.caller_type}
+            caller_card={block.caller_card}
+            caller_card_meaning={block.caller_card_meaning}
+            phenomenon_ref={block.phenomenon_ref}
+          />
+        ))}
+      </div>
+
+      <div class="session-narrative prose">
+        <Content />
+      </div>
+    </div>
+
+    {d.phenomena_log.length > 0 && (
+      <PhenomenaTable phenomena={d.phenomena_log} />
+    )}
+
+    {d.session_stats && (
+      <SessionStats stats={d.session_stats} />
+    )}
+
+  </div>
+</Base>
+
+<style>
+  .session-header {
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-xl);
+  }
+
+  .session-header__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+  }
+
+  .session-header__station {
+    color: var(--color-accent);
+  }
+
+  .session-header__sep {
+    color: var(--color-text-dim);
+  }
+
+  .session-header__callsign {
+    font-size: 2.4rem;
+    margin-bottom: var(--space-lg);
+    letter-spacing: 0.01em;
+  }
+
+  .session-header__details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .session-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .session-detail__label {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .session-detail__value {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+  }
+
+  .session-header__atmosphere {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.65;
+    margin-top: var(--space-md);
+    margin-bottom: 0;
+    padding-left: var(--space-md);
+    border-left: 2px solid var(--color-border);
+  }
+
+  .session-header__tags {
+    margin-top: var(--space-md);
+  }
+
+  .session-body {
+    margin-top: var(--space-xl);
+  }
+
+  .session-narrative {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Override prose headings for session body narrative */
+  .session-narrative :global(h2) {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 400;
+  }
+
+  .session-narrative :global(hr) {
+    border-top: 1px solid var(--color-border-dim);
+    margin: var(--space-lg) 0;
+  }
+
+  .session-narrative :global(strong) {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .session-narrative :global(em) {
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 600px) {
+    .session-header__callsign { font-size: 1.8rem; }
+    .session-header__details { flex-direction: column; gap: var(--space-sm); }
+  }
+</style>

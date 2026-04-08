@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<Base title="Signal Lost" description="Page not found — WBPR 1680 AM">
+  <div class="container">
+    <div class="lost">
+      <div class="lost__code mono">404</div>
+      <h1 class="lost__title">Signal Lost</h1>
+      <p class="lost__message">
+        The frequency isn't resolving. Whatever you were looking for may have moved,
+        been redacted, or simply isn't transmitting tonight.
+      </p>
+      <a href={base} class="lost__home mono">← Return to the archive</a>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .lost {
+    padding: var(--space-2xl) 0;
+    max-width: 480px;
+  }
+
+  .lost__code {
+    font-size: 4rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin-bottom: var(--space-lg);
+  }
+
+  .lost__title {
+    font-size: 2rem;
+    margin-bottom: var(--space-lg);
+  }
+
+  .lost__message {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    margin-bottom: var(--space-xl);
+  }
+
+  .lost__home {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--color-accent);
+  }
+  .lost__home:hover { color: var(--color-text); }
+</style>

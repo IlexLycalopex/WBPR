@@ -1,0 +1,145 @@
+---
+import Base from '../../layouts/Base.astro';
+import { buildPhenomenaIndex } from '../../utils/phenomenaIndex';
+
+const phenomenaIndex = await buildPhenomenaIndex();
+const phenomena = [...phenomenaIndex.values()].sort((a, b) => {
+  // Sort escalating first, then active, then new, then others
+  const order: Record<string, number> = {
+    Escalating: 0, Active: 1, New: 2, Dormant: 3, Resolved: 4,
+  };
+  return (order[a.latestStatus] ?? 5) - (order[b.latestStatus] ?? 5);
+});
+
+const base = import.meta.env.BASE_URL;
+
+function statusClass(status: string) {
+  return `badge badge--${status.toLowerCase()}`;
+}
+
+function confidenceClass(confidence: string) {
+  return `badge badge--${confidence.toLowerCase()}`;
+}
+---
+
+<Base title="Phenomena" description="Cross-session phenomena index — Void 1680 AM">
+  <div class="container">
+
+    <header class="page-header">
+      <h1>Phenomena Index</h1>
+      <p class="page-header__sub mono">
+        {phenomena.length} phenomenon{phenomena.length !== 1 ? 'a' : ''} logged across all sessions
+      </p>
+    </header>
+
+    {phenomena.length === 0 ? (
+      <p class="empty mono">No phenomena logged yet.</p>
+    ) : (
+      <div class="phenomena-index">
+        {phenomena.map(p => (
+          <a href={`${base}phenomena/${p.key}`} class="phenom-row">
+            <div class="phenom-row__header">
+              <span class="phenom-row__name">{p.name}</span>
+              <div class="phenom-row__badges">
+                <span class={statusClass(p.latestStatus)}>{p.latestStatus}</span>
+                <span class={confidenceClass(p.latestConfidence)}>{p.latestConfidence}</span>
+              </div>
+            </div>
+            <div class="phenom-row__meta mono">
+              <span>{p.entries.length} session report{p.entries.length !== 1 ? 's' : ''}</span>
+              {p.allLocations.length > 0 && (
+                <span class="phenom-row__locations">{p.allLocations.join(' · ')}</span>
+              )}
+            </div>
+            {p.allTags.length > 0 && (
+              <ul class="tag-list phenom-row__tags">
+                {p.allTags.map(t => <li><span class="tag">{t}</span></li>)}
+              </ul>
+            )}
+          </a>
+        ))}
+      </div>
+    )}
+
+  </div>
+</Base>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header__sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-top: var(--space-sm);
+    margin-bottom: 0;
+  }
+
+  .phenomena-index {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .phenom-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .phenom-row:hover {
+    border-color: var(--color-accent-dim);
+    background: var(--color-surface-raised);
+  }
+
+  .phenom-row__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .phenom-row__name {
+    font-size: 1.05rem;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+  }
+
+  .phenom-row__badges {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .phenom-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm) var(--space-lg);
+    font-size: 0.72rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .phenom-row__locations {
+    color: var(--color-text-muted);
+  }
+
+  .phenom-row__tags {
+    margin-top: var(--space-xs);
+  }
+
+  .empty {
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+  }
+</style>

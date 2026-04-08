@@ -1,0 +1,267 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SessionCard from '../components/SessionCard.astro';
+
+const allSessions = await getCollection('sessions');
+const sessions = allSessions.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// Collect all unique tags, locations, veil statuses for filter UI
+const allTags = [...new Set(sessions.flatMap(s => s.data.tags))].sort();
+const allLocations = [...new Set(sessions.map(s => s.data.location))].sort();
+const allVeilStatuses = [...new Set(sessions.map(s => s.data.veil_status))].sort();
+---
+
+<Base title="Archive" description="All WBPR broadcast sessions">
+  <div class="container--wide">
+
+    <header class="page-header">
+      <h1>Broadcast Archive</h1>
+      <p class="page-header__sub mono">
+        {sessions.length} session{sessions.length !== 1 ? 's' : ''} logged
+      </p>
+    </header>
+
+    <div class="archive-layout">
+      <aside class="filter-panel">
+        <div class="filter-group">
+          <h3 class="filter-group__title mono">Veil Status</h3>
+          <ul class="filter-list" id="filter-veil">
+            {allVeilStatuses.map(v => (
+              <li>
+                <label class="filter-item">
+                  <input type="checkbox" class="filter-cb" data-filter="veil" data-value={v.toLowerCase()} />
+                  <span>{v}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="filter-group">
+          <h3 class="filter-group__title mono">Location</h3>
+          <ul class="filter-list" id="filter-location">
+            {allLocations.map(loc => (
+              <li>
+                <label class="filter-item">
+                  <input type="checkbox" class="filter-cb" data-filter="location" data-value={loc.toLowerCase()} />
+                  <span class="filter-item__text">{loc}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="filter-group">
+          <h3 class="filter-group__title mono">Tags</h3>
+          <ul class="filter-list" id="filter-tags">
+            {allTags.map(t => (
+              <li>
+                <label class="filter-item">
+                  <input type="checkbox" class="filter-cb" data-filter="tag" data-value={t} />
+                  <span>{t}</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <button class="filter-reset" id="filter-reset">Clear filters</button>
+      </aside>
+
+      <div class="session-grid" id="session-grid">
+        {sessions.map(s => (
+          <div
+            class="session-grid__item"
+            data-veil={s.data.veil_status.toLowerCase()}
+            data-location={s.data.location.toLowerCase()}
+            data-tags={s.data.tags.join(',')}
+          >
+            <SessionCard
+              session={s.data.session}
+              station={s.data.station}
+              call_sign={s.data.call_sign}
+              location={s.data.location}
+              date={s.data.date}
+              veil_status={s.data.veil_status}
+              veil_intensity={s.data.veil_intensity}
+              callers={s.data.callers}
+              tags={s.data.tags}
+              slug={s.id.replace(/\.md$/, '')}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <p class="no-results" id="no-results" hidden>No sessions match the current filters.</p>
+
+  </div>
+</Base>
+
+<script>
+  const cbs = document.querySelectorAll<HTMLInputElement>('.filter-cb');
+  const items = document.querySelectorAll<HTMLElement>('.session-grid__item');
+  const noResults = document.getElementById('no-results')!;
+  const resetBtn = document.getElementById('filter-reset')!;
+
+  function getActiveFilters() {
+    const filters: Record<string, string[]> = { veil: [], location: [], tag: [] };
+    cbs.forEach(cb => {
+      if (cb.checked) filters[cb.dataset.filter!].push(cb.dataset.value!);
+    });
+    return filters;
+  }
+
+  function applyFilters() {
+    const { veil, location, tag } = getActiveFilters();
+    let visible = 0;
+
+    items.forEach(item => {
+      const itemVeil = item.dataset.veil ?? '';
+      const itemLocation = item.dataset.location ?? '';
+      const itemTags = (item.dataset.tags ?? '').split(',');
+
+      const matchVeil = veil.length === 0 || veil.includes(itemVeil);
+      const matchLocation = location.length === 0 || location.some(l => itemLocation.includes(l));
+      const matchTag = tag.length === 0 || tag.some(t => itemTags.includes(t));
+
+      const show = matchVeil && matchLocation && matchTag;
+      item.hidden = !show;
+      if (show) visible++;
+    });
+
+    noResults.hidden = visible > 0;
+  }
+
+  cbs.forEach(cb => cb.addEventListener('change', applyFilters));
+  resetBtn.addEventListener('click', () => {
+    cbs.forEach(cb => (cb.checked = false));
+    applyFilters();
+  });
+</script>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header__sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-top: var(--space-sm);
+    margin-bottom: 0;
+  }
+
+  .archive-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .filter-panel {
+    position: sticky;
+    top: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .filter-group__title {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .filter-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .filter-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    transition: color var(--transition);
+  }
+
+  .filter-item:hover { color: var(--color-text); }
+
+  .filter-item input[type="checkbox"] {
+    accent-color: var(--color-accent);
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .filter-item__text {
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .filter-reset {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .filter-reset:hover {
+    border-color: var(--color-accent-dim);
+    color: var(--color-accent);
+  }
+
+  .session-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .no-results {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-text-dim);
+    text-align: center;
+    padding: var(--space-2xl) 0;
+  }
+
+  @media (max-width: 768px) {
+    .archive-layout {
+      grid-template-columns: 1fr;
+    }
+    .filter-panel {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-lg);
+    }
+    .filter-group {
+      min-width: 140px;
+    }
+  }
+</style>

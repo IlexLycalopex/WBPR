@@ -1,0 +1,131 @@
+---
+import Base from '../../layouts/Base.astro';
+import { buildSoundtrackIndex } from '../../utils/soundtrackIndex';
+
+const artistIndex = await buildSoundtrackIndex();
+const artists = [...artistIndex.values()].sort((a, b) =>
+  b.totalAppearances - a.totalAppearances
+);
+
+const totalTracks = artists.reduce((acc, a) => acc + a.tracks.length, 0);
+const totalAppearances = artists.reduce((acc, a) => acc + a.totalAppearances, 0);
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Base title="Soundtrack" description="All music logged across WBPR sessions">
+  <div class="container">
+
+    <header class="page-header">
+      <h1>Soundtrack Index</h1>
+      <p class="page-header__sub mono">
+        {totalTracks} track{totalTracks !== 1 ? 's' : ''} &nbsp;·&nbsp;
+        {artists.length} artist{artists.length !== 1 ? 's' : ''} &nbsp;·&nbsp;
+        {totalAppearances} appearance{totalAppearances !== 1 ? 's' : ''}
+      </p>
+    </header>
+
+    {artists.length === 0 ? (
+      <p class="empty mono">No tracks logged yet.</p>
+    ) : (
+      <div class="artist-list">
+        {artists.map(artist => (
+          <a href={`${base}soundtrack/${artist.slug}`} class="artist-row">
+            <div class="artist-row__header">
+              <span class="artist-row__name">{artist.name}</span>
+              <span class="artist-row__count mono">
+                {artist.totalAppearances} appearance{artist.totalAppearances !== 1 ? 's' : ''}
+              </span>
+            </div>
+            <div class="artist-row__tracks mono">
+              {artist.tracks.map(t => t.title).join(' · ')}
+            </div>
+            <div class="artist-row__sessions mono">
+              {artist.sessionSlugs.length} session{artist.sessionSlugs.length !== 1 ? 's' : ''}
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+
+  </div>
+</Base>
+
+<style>
+  .page-header {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .page-header__sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-top: var(--space-sm);
+    margin-bottom: 0;
+  }
+
+  .artist-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .artist-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .artist-row:hover {
+    border-color: var(--color-accent-dim);
+    background: var(--color-surface-raised);
+  }
+
+  .artist-row__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .artist-row__name {
+    font-size: 1.05rem;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+  }
+
+  .artist-row__count {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .artist-row__tracks {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .artist-row__sessions {
+    font-size: 0.68rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  .empty {
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+  }
+</style>

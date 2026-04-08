@@ -1,0 +1,203 @@
+---
+import Base from '../../layouts/Base.astro';
+import { buildSoundtrackIndex } from '../../utils/soundtrackIndex';
+
+export async function getStaticPaths() {
+  const index = await buildSoundtrackIndex();
+  return [...index.values()].map(a => ({
+    params: { artist: a.slug },
+    props: { artist: a },
+  }));
+}
+
+const { artist } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const formattedDate = (d: string) => new Date(d).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'short', day: 'numeric'
+});
+---
+
+<Base title={artist.name} description={`${artist.name} — Soundtrack appearances — WBPR`}>
+  <div class="container">
+
+    <nav class="breadcrumb mono">
+      <a href={`${base}soundtrack`}>Soundtrack</a>
+      <span class="breadcrumb__sep">›</span>
+      <span>{artist.name}</span>
+    </nav>
+
+    <header class="artist-header">
+      <h1>{artist.name}</h1>
+      <p class="artist-header__meta mono">
+        {artist.tracks.length} track{artist.tracks.length !== 1 ? 's' : ''} &nbsp;·&nbsp;
+        {artist.totalAppearances} appearance{artist.totalAppearances !== 1 ? 's' : ''} &nbsp;·&nbsp;
+        {artist.sessionSlugs.length} session{artist.sessionSlugs.length !== 1 ? 's' : ''}
+      </p>
+    </header>
+
+    <div class="tracks">
+      {artist.tracks.map(track => (
+        <div class="track-card">
+          <div class="track-card__header">
+            <h2 class="track-card__title">
+              {track.urls[0] ? (
+                <a href={track.urls[0]} target="_blank" rel="noopener">{track.title}</a>
+              ) : (
+                track.title
+              )}
+            </h2>
+            {track.sources.length > 0 && (
+              <span class="track-card__source mono">{track.sources.join(', ')}</span>
+            )}
+          </div>
+
+          <div class="appearances">
+            <h3 class="appearances__title mono">Appearances</h3>
+            {track.appearances.map(app => (
+              <div class="appearance">
+                <a href={`${base}sessions/${app.sessionSlug}`} class="appearance__session mono">
+                  {app.station} S{String(app.sessionNumber).padStart(2, '0')}
+                </a>
+                <span class="appearance__date mono">{formattedDate(app.date)}</span>
+                <span class="appearance__time mono">{app.blockTime}</span>
+                {app.phenomenonRef && (
+                  <a href={`${base}phenomena/${app.phenomenonRef}`} class="appearance__phenom mono">
+                    ↗ {app.phenomenonRef.replace(/-/g, ' ')}
+                  </a>
+                )}
+                {app.notes && (
+                  <p class="appearance__notes">{app.notes}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</Base>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-xl);
+  }
+
+  .breadcrumb a { color: var(--color-accent); }
+  .breadcrumb a:hover { color: var(--color-text); }
+  .breadcrumb__sep { color: var(--color-text-dim); }
+
+  .artist-header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .artist-header h1 { font-size: 2rem; margin-bottom: var(--space-sm); }
+
+  .artist-header__meta {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--color-text-dim);
+    margin: 0;
+  }
+
+  .tracks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .track-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .track-card__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .track-card__title {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  .track-card__title a { color: var(--color-text); }
+  .track-card__title a:hover { color: var(--color-accent); }
+
+  .track-card__source {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .appearances {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .appearances__title {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-md);
+    font-weight: 400;
+  }
+
+  .appearance {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-xs) var(--space-md);
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border-dim);
+  }
+
+  .appearance:last-child { border-bottom: none; }
+
+  .appearance__session {
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+  .appearance__session:hover { color: var(--color-text); }
+
+  .appearance__date,
+  .appearance__time {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .appearance__phenom {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--color-status-escalating);
+  }
+  .appearance__phenom:hover { color: var(--color-accent); }
+
+  .appearance__notes {
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: var(--space-xs) 0 0;
+    font-style: italic;
+  }
+</style>

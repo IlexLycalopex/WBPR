@@ -1,0 +1,139 @@
+---
+interface Props {
+  session: number;
+  station: string;
+  call_sign: string;
+  location: string;
+  date: string;
+  veil_status: string;
+  veil_intensity: number;
+  callers: number;
+  tags: string[];
+  slug: string;
+}
+
+const {
+  session,
+  station,
+  call_sign,
+  location,
+  date,
+  veil_status,
+  veil_intensity,
+  callers,
+  tags,
+  slug,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+
+const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+function veilClass(status: string) {
+  const map: Record<string, string> = {
+    thin: 'veil-badge--thin',
+    normal: 'veil-badge--normal',
+    thick: 'veil-badge--thick',
+    opaque: 'veil-badge--opaque',
+  };
+  return `veil-badge ${map[status.toLowerCase()] ?? 'veil-badge--normal'}`;
+}
+---
+
+<a href={`${base}sessions/${slug}`} class="session-card">
+  <div class="session-card__header">
+    <div class="session-card__meta mono">
+      <span class="session-card__station">{station}</span>
+      <span class="session-card__num">S{String(session).padStart(2, '0')}</span>
+    </div>
+    <span class={veilClass(veil_status)}>{veil_status}</span>
+  </div>
+
+  <div class="session-card__body">
+    <p class="session-card__callsign">{call_sign}</p>
+    <p class="session-card__location mono">{location}</p>
+  </div>
+
+  <div class="session-card__footer">
+    <span class="session-card__date mono">{formattedDate}</span>
+    {callers > 0 && (
+      <span class="session-card__callers mono">{callers} caller{callers !== 1 ? 's' : ''}</span>
+    )}
+  </div>
+
+  {tags.length > 0 && (
+    <ul class="tag-list session-card__tags">
+      {tags.slice(0, 5).map(t => (
+        <li><span class="tag">{t}</span></li>
+      ))}
+    </ul>
+  )}
+</a>
+
+<style>
+  .session-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .session-card:hover {
+    border-color: var(--color-accent-dim);
+    background: var(--color-surface-raised);
+  }
+
+  .session-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .session-card__meta {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .session-card__num {
+    color: var(--color-accent);
+  }
+
+  .session-card__callsign {
+    font-size: 1.15rem;
+    color: var(--color-text);
+    margin: 0;
+    font-family: var(--font-serif);
+  }
+
+  .session-card__location {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.03em;
+    margin: 0;
+  }
+
+  .session-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .session-card__tags {
+    margin-top: var(--space-xs);
+  }
+</style>

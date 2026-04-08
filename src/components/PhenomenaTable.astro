@@ -1,0 +1,126 @@
+---
+interface Phenomenon {
+  key: string;
+  name: string;
+  status: string;
+  confidence: string;
+  locations: string[];
+  notes: string;
+  tags: string[];
+}
+
+interface Props {
+  phenomena: Phenomenon[];
+}
+
+const { phenomena } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+function statusClass(status: string) {
+  return `badge badge--${status.toLowerCase()}`;
+}
+
+function confidenceClass(confidence: string) {
+  return `badge badge--${confidence.toLowerCase()}`;
+}
+---
+
+{phenomena.length > 0 && (
+  <section class="phenomena-section">
+    <h2 class="phenomena-section__title">Phenomena Log</h2>
+    <div class="phenomena-list">
+      {phenomena.map(p => (
+        <a href={`${base}phenomena/${p.key}`} class="phenomenon-row">
+          <div class="phenomenon-row__main">
+            <span class="phenomenon-row__name">{p.name}</span>
+            <div class="phenomenon-row__badges">
+              <span class={statusClass(p.status)}>{p.status}</span>
+              <span class={confidenceClass(p.confidence)}>{p.confidence}</span>
+            </div>
+          </div>
+          {p.notes && (
+            <p class="phenomenon-row__notes">{p.notes}</p>
+          )}
+          {p.locations.length > 0 && (
+            <p class="phenomenon-row__locations mono">
+              {p.locations.join(' · ')}
+            </p>
+          )}
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .phenomena-section {
+    margin-top: var(--space-2xl);
+  }
+
+  .phenomena-section__title {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .phenomena-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .phenomenon-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md) var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+
+  .phenomenon-row:hover {
+    border-color: var(--color-accent-dim);
+    background: var(--color-surface-raised);
+  }
+
+  .phenomenon-row__main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .phenomenon-row__name {
+    font-size: 1rem;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+  }
+
+  .phenomenon-row__badges {
+    display: flex;
+    gap: var(--space-xs);
+  }
+
+  .phenomenon-row__notes {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .phenomenon-row__locations {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+</style>

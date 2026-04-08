@@ -1,0 +1,216 @@
+---
+import Base from '../../layouts/Base.astro';
+import { buildPhenomenaIndex } from '../../utils/phenomenaIndex';
+
+export async function getStaticPaths() {
+  const index = await buildPhenomenaIndex();
+  return [...index.values()].map(p => ({
+    params: { key: p.key },
+    props: { phenomenon: p },
+  }));
+}
+
+const { phenomenon } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+function statusClass(status: string) {
+  return `badge badge--${status.toLowerCase()}`;
+}
+
+function confidenceClass(confidence: string) {
+  return `badge badge--${confidence.toLowerCase()}`;
+}
+
+const formattedDate = (d: string) => new Date(d).toLocaleDateString('en-US', {
+  year: 'numeric', month: 'short', day: 'numeric'
+});
+---
+
+<Base title={phenomenon.name} description={`Phenomenon: ${phenomenon.name} — Void 1680 AM`}>
+  <div class="container">
+
+    <nav class="breadcrumb mono">
+      <a href={`${base}phenomena`}>Phenomena</a>
+      <span class="breadcrumb__sep">›</span>
+      <span>{phenomenon.name}</span>
+    </nav>
+
+    <header class="phenom-header">
+      <div class="phenom-header__badges">
+        <span class={statusClass(phenomenon.latestStatus)}>{phenomenon.latestStatus}</span>
+        <span class={confidenceClass(phenomenon.latestConfidence)}>{phenomenon.latestConfidence}</span>
+      </div>
+      <h1>{phenomenon.name}</h1>
+      <p class="phenom-header__meta mono">
+        {phenomenon.entries.length} session report{phenomenon.entries.length !== 1 ? 's' : ''}
+        {phenomenon.allLocations.length > 0 && (
+          <span> · {phenomenon.allLocations.join(' · ')}</span>
+        )}
+      </p>
+      {phenomenon.allTags.length > 0 && (
+        <ul class="tag-list phenom-header__tags">
+          {phenomenon.allTags.map(t => <li><span class="tag">{t}</span></li>)}
+        </ul>
+      )}
+    </header>
+
+    <section class="session-history">
+      <h2 class="section-title mono">Session Reports</h2>
+      <div class="timeline">
+        {phenomenon.entries.map((entry, i) => (
+          <div class="timeline-entry">
+            <div class="timeline-entry__connector">
+              <div class="timeline-entry__dot"></div>
+              {i < phenomenon.entries.length - 1 && <div class="timeline-entry__line"></div>}
+            </div>
+            <div class="timeline-entry__content">
+              <div class="timeline-entry__header">
+                <a href={`${base}sessions/${entry.sessionSlug}`} class="timeline-entry__session">
+                  {entry.station} S{String(entry.sessionNumber).padStart(2, '0')}
+                </a>
+                <span class="timeline-entry__date mono">{formattedDate(entry.date)}</span>
+                <span class={statusClass(entry.status)}>{entry.status}</span>
+                <span class={confidenceClass(entry.confidence)}>{entry.confidence}</span>
+              </div>
+              {entry.notes && (
+                <p class="timeline-entry__notes">{entry.notes}</p>
+              )}
+              {entry.locations.length > 0 && (
+                <p class="timeline-entry__locations mono">{entry.locations.join(' · ')}</p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</Base>
+
+<style>
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-xl);
+  }
+
+  .breadcrumb a { color: var(--color-accent); }
+  .breadcrumb a:hover { color: var(--color-text); }
+  .breadcrumb__sep { color: var(--color-text-dim); }
+
+  .phenom-header {
+    margin-bottom: var(--space-2xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .phenom-header__badges {
+    display: flex;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+
+  .phenom-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-sm);
+  }
+
+  .phenom-header__meta {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-sm);
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 400;
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .timeline-entry {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .timeline-entry__connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .timeline-entry__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--color-accent-dim);
+    background: var(--color-bg);
+    flex-shrink: 0;
+  }
+
+  .timeline-entry__line {
+    width: 1px;
+    flex: 1;
+    background: var(--color-border);
+    margin: var(--space-xs) 0;
+    min-height: var(--space-xl);
+  }
+
+  .timeline-entry__content {
+    flex: 1;
+    padding-bottom: var(--space-xl);
+  }
+
+  .timeline-entry__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+  }
+
+  .timeline-entry__session {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+  .timeline-entry__session:hover { color: var(--color-text); }
+
+  .timeline-entry__date {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .timeline-entry__notes {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0 0 var(--space-xs);
+  }
+
+  .timeline-entry__locations {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    margin: 0;
+  }
+</style>

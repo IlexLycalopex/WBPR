@@ -1,0 +1,295 @@
+---
+interface Prompt {
+  card: string;
+  tone: string;
+}
+
+interface Track {
+  title: string;
+  artist: string;
+  url?: string;
+  source?: string;
+  notes?: string;
+}
+
+interface Props {
+  index: number;
+  time: string;
+  prompts: Prompt[];
+  playlist: Track[];
+  caller_type: string;
+  caller_card?: string;
+  caller_card_meaning?: string;
+  phenomenon_ref?: string;
+}
+
+const {
+  index,
+  time,
+  prompts,
+  playlist,
+  caller_type,
+  caller_card,
+  caller_card_meaning,
+  phenomenon_ref,
+} = Astro.props;
+
+const callerLabel: Record<string, string> = {
+  none: 'No caller',
+  standard: 'Caller',
+  phenomenon: 'Caller — Phenomenon',
+  emergency: 'Caller — Emergency',
+};
+
+const callerClass: Record<string, string> = {
+  none: '',
+  standard: 'caller--standard',
+  phenomenon: 'caller--phenomenon',
+  emergency: 'caller--emergency',
+};
+
+const base = import.meta.env.BASE_URL;
+---
+
+<section class="block">
+  <header class="block__header">
+    <span class="block__number mono">Block {index + 1}</span>
+    <span class="block__time mono">{time}</span>
+  </header>
+
+  {prompts.length > 0 && (
+    <div class="block__prompts">
+      {prompts.map(p => (
+        <div class="prompt">
+          <span class="prompt__card">{p.card}</span>
+          <span class="prompt__tone">{p.tone}</span>
+        </div>
+      ))}
+    </div>
+  )}
+
+  <div class="block__playlist">
+    {playlist.length > 0 ? (
+      <ul class="track-list">
+        {playlist.map((track, i) => (
+          <li class="track">
+            <span class="track__num mono">{i + 1}</span>
+            <span class="track__info">
+              {track.url ? (
+                <a href={track.url} target="_blank" rel="noopener" class="track__title">{track.title}</a>
+              ) : (
+                <span class="track__title">{track.title}</span>
+              )}
+              <span class="track__artist">{track.artist}</span>
+              {track.source && <span class="track__source mono">{track.source}</span>}
+            </span>
+            {track.notes && <span class="track__notes">{track.notes}</span>}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="playlist-empty">
+        <span class="mono">— Playlist not logged —</span>
+      </p>
+    )}
+  </div>
+
+  {caller_type !== 'none' && (
+    <div class={`block__caller ${callerClass[caller_type] ?? ''}`}>
+      <span class="caller__label mono">{callerLabel[caller_type] ?? 'Caller'}</span>
+      {caller_card && (
+        <span class="caller__card">
+          {caller_card}
+          {caller_card_meaning && <em> — {caller_card_meaning}</em>}
+        </span>
+      )}
+      {phenomenon_ref && (
+        <a href={`${base}phenomena/${phenomenon_ref}`} class="caller__phenomenon-link mono">
+          ↗ Phenomenon: {phenomenon_ref.replace(/-/g, ' ')}
+        </a>
+      )}
+    </div>
+  )}
+
+  <div class="block__narrative prose">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .block {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    overflow: hidden;
+  }
+
+  .block__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .block__number {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+
+  .block__time {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    letter-spacing: 0.06em;
+  }
+
+  .block__prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-dim);
+    background: var(--color-accent-glow);
+  }
+
+  .prompt {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .prompt__card {
+    font-size: 0.85rem;
+    color: var(--color-text);
+  }
+
+  .prompt__tone {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .block__playlist {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-dim);
+  }
+
+  .track-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .track {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+  }
+
+  .track__num {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    min-width: 1.2rem;
+  }
+
+  .track__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-sm);
+  }
+
+  .track__title {
+    font-size: 0.95rem;
+    color: var(--color-text);
+  }
+
+  a.track__title:hover {
+    color: var(--color-accent);
+  }
+
+  .track__artist {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .track__source {
+    font-size: 0.65rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .playlist-empty {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.08em;
+    padding: var(--space-sm) 0;
+    text-align: center;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-sm);
+  }
+
+  .block__caller {
+    padding: var(--space-sm) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-dim);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-sm);
+  }
+
+  .caller__label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .caller--standard .caller__label { color: var(--color-caller-standard); }
+  .caller--phenomenon .caller__label { color: var(--color-caller-phenomenon); }
+  .caller--emergency .caller__label { color: var(--color-caller-emergency); }
+
+  .caller__card {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .caller__phenomenon-link {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--color-caller-phenomenon);
+    margin-left: auto;
+  }
+  .caller__phenomenon-link:hover { color: var(--color-accent); }
+
+  .block__narrative {
+    padding: var(--space-lg);
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+
+  .block__narrative :global(p) {
+    margin-bottom: var(--space-md);
+  }
+
+  .block__narrative :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .block__narrative :global(strong) {
+    color: var(--color-accent);
+    font-weight: 500;
+  }
+
+  .block__narrative :global(em) {
+    color: var(--color-text-muted);
+  }
+</style>
