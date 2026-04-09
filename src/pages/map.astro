@@ -10,8 +10,8 @@ const base = import.meta.env.BASE_URL;
 
 // ─── Geographic projection ────────────────────────────────────────────────────
 // Covers the northern Montana / Highway 2 corridor.
-const GEO = { minLat: 47.4, maxLat: 49.2, minLon: -116.2, maxLon: -104.2 };
-const VB = { w: 1060, h: 350, px: 50, py: 35 };
+const GEO = { minLat: 47.2, maxLat: 49.4, minLon: -116.2, maxLon: -104.2 };
+const VB = { w: 1060, h: 440, px: 55, py: 45 };
 
 function projX(lon: number): number {
   return VB.px + ((lon - GEO.minLon) / (GEO.maxLon - GEO.minLon)) * (VB.w - 2 * VB.px);
@@ -188,15 +188,17 @@ function fmtDate(d: string) {
 
   <!-- ─── Filter bar ─── -->
   <div class="filter-bar container--wide">
-    <div class="filter-group">
-      <span class="filter-label mono">Session</span>
-      <div class="session-pills" id="session-pills">
+    <div class="filter-group filter-group--sessions">
+      <span class="filter-label mono">Sessions</span>
+      <button class="pill-quick mono" id="pills-all">All</button>
+      <button class="pill-quick mono" id="pills-none">None</button>
+      <div class="session-pills-scroll" id="session-pills">
         {sessionNumbers.map(n => (
           <button class="pill active" data-session={n}>{sessionLabel(n)}</button>
         ))}
       </div>
     </div>
-    <div class="filter-group">
+    <div class="filter-group filter-group--layers">
       <span class="filter-label mono">Layers</span>
       <div class="layer-toggles">
         <button class="toggle on" data-layer="phenomena">
@@ -219,7 +221,7 @@ function fmtDate(d: string) {
     <div class="map-area" id="map-area">
       <svg
         viewBox={`0 0 ${VB.w} ${VB.h}`}
-        preserveAspectRatio="xMidYMid meet"
+        preserveAspectRatio="xMidYMid slice"
         id="transmission-svg"
         role="img"
         aria-label="Schematic map of northern Montana showing WBPR broadcast origin and reported phenomena locations along the Highway 2 corridor"
@@ -659,7 +661,9 @@ function fmtDate(d: string) {
   .map-page {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); /* subtract site header */
+    /* Fill remaining viewport below site nav; overflow hidden prevents runaway growth */
+    height: calc(100vh - var(--nav-height, 56px));
+    overflow: hidden;
   }
 
   .map-header {
@@ -702,23 +706,48 @@ function fmtDate(d: string) {
   /* ─── Filter bar ─── */
   .filter-bar {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: center;
-    padding: 0.6rem 2rem;
+    padding: 0.5rem 2rem;
     border-bottom: 1px solid var(--color-border);
     background: var(--color-surface);
     flex-shrink: 0;
-    flex-wrap: wrap;
   }
-  .filter-group { display: flex; align-items: center; gap: 0.6rem; }
+  .filter-group { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+  .filter-group--sessions { flex: 1; min-width: 0; }
+  .filter-group--layers   { flex-shrink: 0; }
   .filter-label {
     font-size: 0.58rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-text-dim);
     white-space: nowrap;
+    flex-shrink: 0;
   }
-  .session-pills { display: flex; gap: 0.25rem; }
+  /* Scrollable pill strip — scales to any session count */
+  .session-pills-scroll {
+    display: flex;
+    gap: 0.2rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-width: 0;
+  }
+  .session-pills-scroll::-webkit-scrollbar { display: none; }
+  /* All / None quick buttons */
+  .pill-quick {
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    padding: 0.18rem 0.45rem;
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--color-text-dim);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 150ms;
+  }
+  .pill-quick:hover { border-color: var(--color-accent-dim); color: var(--color-accent); }
   .pill {
     font-family: var(--font-mono);
     font-size: 0.58rem;
@@ -764,7 +793,7 @@ function fmtDate(d: string) {
   /* ─── Map layout ─── */
   .map-layout {
     display: grid;
-    grid-template-columns: 1fr 330px;
+    grid-template-columns: 1fr 300px;
     flex: 1;
     min-height: 0;
     overflow: hidden;
@@ -875,6 +904,8 @@ function fmtDate(d: string) {
     height: 100%;
     min-height: 0;
   }
+  /* Explicit override — display:flex above wins over [hidden]'s browser default */
+  .detail-pane[hidden] { display: none !important; }
 
   /* Chevron scroll buttons — vertical variant */
   .scroll-btn {
@@ -1109,6 +1140,15 @@ function fmtDate(d: string) {
       pill.classList.toggle('active');
       applySessionFilter();
     });
+  });
+
+  document.getElementById('pills-all')?.addEventListener('click', () => {
+    document.querySelectorAll<HTMLButtonElement>('.pill').forEach(p => p.classList.add('active'));
+    applySessionFilter();
+  });
+  document.getElementById('pills-none')?.addEventListener('click', () => {
+    document.querySelectorAll<HTMLButtonElement>('.pill').forEach(p => p.classList.remove('active'));
+    applySessionFilter();
   });
 
   function applySessionFilter() {
