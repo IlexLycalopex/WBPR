@@ -34,7 +34,7 @@ blocks:
         artist: Ross From Friends
         url: ""
         source: ""
-    caller_type: urgent/distressed
+    caller_type: standard
     caller_card: Seven of Clubs
     caller_card_meaning: Something following them
     phenomenon_ref: the-watchers
