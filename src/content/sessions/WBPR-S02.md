@@ -3,277 +3,197 @@ session: 2
 station: WBPR
 call_sign: Oso Sur
 location: Montana Fire Lookout, ~7,200ft
-date: "2026-04-08"
+date: "1973-10-27"
 start_time: "23:00"
-end_time: "02:15"
-duration_minutes: 195
-atmospheric_conditions: Clear, 28°F and dropping. Unusual stellar clarity. Drift active from open.
+end_time: "02:20"
+duration_minutes: 200
+atmospheric_conditions: "Overcast. Low cloud pressing down on the tree line. Equipment ran warm all night. Faint interference on open, cleared by 23:15."
 veil_status: Thin
-veil_intensity: 6
-callers: 2
+veil_intensity: 4
+callers: 4
 
 blocks:
-  - time: "23:00"
+  - time: "23:05"
     prompts:
-      - card: Nine of Clubs
-        tone: Something that builds tension
-      - card: Four of Hearts
-        tone: Something that makes you feel safe
-      - card: Two of Spades
-        tone: Something eerie, uncanny
-    playlist:
-      - title: The Nothing Changes
-        artist: Kilimanjaro Darkjazz Ensemble
-        url: ""
-        source: ""
-      - title: Kiara
-        artist: Bonobo
-        url: ""
-        source: ""
-      - title: Thank God I'm A Lizard
-        artist: Ross From Friends
-        url: ""
-        source: ""
+      - card: Seven of Clubs
+        tone: Something you sing along to with a friend — how did you both come to love it?
+      - card: Two of Clubs
+        tone: The new obsession — the thing you listen to every day right now — why is it resonating?
+      - card: Eight of Clubs
+        tone: The drumbeat that always has you tapping your foot — what is your favourite bit?
+    playlist: []
     caller_type: standard
-    caller_card: Seven of Clubs
-    caller_card_meaning: Something following them
-    phenomenon_ref: the-watchers
-
-  - time: "23:50"
-    prompts:
-      - card: King of Hearts
-        tone: Something majestic, vast
-      - card: Six of Diamonds
-        tone: Something from a journey
-      - card: Queen of Clubs
-        tone: Something dark
-    playlist:
-      - title: Music is Math
-        artist: Boards of Canada
-        url: ""
-        source: ""
-      - title: All Along the Watchtower
-        artist: Jimi Hendrix
-        url: ""
-        source: ""
-      - title: Prowler
-        artist: Bohren & Der Club of Gore
-        url: ""
-        source: ""
-    caller_type: none
-    caller_card: ""
-    caller_card_meaning: ""
-    phenomenon_ref: frost-manifestations
-
-  - time: "00:40"
-    prompts:
-      - card: Three of Spades
-        tone: Something that sounds like the void
-      - card: Ace of Diamonds
-        tone: Something from your childhood
-      - card: Jack of Hearts
-        tone: Something youthful, energetic
-    playlist:
-      - title: Construct of Frequencies and White Noise
-        artist: Spectre Horsemen Pale With Dust
-        url: ""
-        source: ""
-      - title: Mysterons
-        artist: Portishead
-        url: ""
-        source: ""
-      - title: Organ Donor
-        artist: DJ Shadow
-        url: ""
-        source: ""
-    caller_type: phenomenon
     caller_card: Ace of Spades
-    caller_card_meaning: The Yellow Sign — direct Carcosa contact
-    phenomenon_ref: the-yellow-sign
-
-  - time: "01:30"
-    prompts:
-      - card: Five of Diamonds
-        tone: Something to end on — your closing statement
-      - card: Nine of Hearts
-        tone: Something that brings you peace
-      - card: Three of Clubs
-        tone: Something complex, layered
-    playlist:
-      - title: White Horses
-        artist: Nick Cave
-        url: ""
-        source: ""
-      - title: "Time, As A Symptom"
-        artist: Joanna Newsom
-        url: ""
-        source: ""
-      - title: Berghain
-        artist: Rosalía
-        url: ""
-        source: ""
-    caller_type: none
-    caller_card: ""
-    caller_card_meaning: ""
+    caller_card_meaning: Ambiguous, hollow — a conclusion arrived at through silence; access revoked
     phenomenon_ref: ""
 
+  - time: "00:05"
+    prompts:
+      - card: Six of Diamonds
+        tone: A song that helps you focus and tune in — what has it helped you with?
+      - card: Two of Diamonds
+        tone: A song you listen to to psyche yourself up for a big moment — when has it worked?
+      - card: Eight of Diamonds
+        tone: One of the stupidest songs you love — it is not good, but you cannot shake it
+    playlist: []
+    caller_type: standard
+    caller_card: Queen of Clubs
+    caller_card_meaning: Adult, introspective — friendship reignited; a message half-written
+    phenomenon_ref: ""
+
+  - time: "01:05"
+    prompts:
+      - card: Seven of Spades
+        tone: Driving late at night down a lonesome highway — does the song make you feel less alone, or more?
+      - card: Four of Spades
+        tone: The first song you think of when you think of summers as a kid — how does it feel to listen to it now?
+      - card: Ten of Spades
+        tone: The saddest song that makes you smile — what about it is so endearing?
+    playlist: []
+    caller_type: standard
+    caller_card: Jack of Diamonds
+    caller_card_meaning: Young, unsteady — financial precarity; sleeping in the car; gas station meals
+    phenomenon_ref: ""
+
+  - time: "02:00"
+    prompts:
+      - card: Six of Hearts
+        tone: A song your family bonded over — who loved it the most and why?
+      - card: Nine of Hearts
+        tone: One of the most memorable songs you saw live — where was it, who was with you?
+      - card: Four of Hearts
+        tone: One of the first songs you learned all the lyrics to — do you still remember them?
+    playlist: []
+    caller_type: phenomenon
+    caller_card: King of Diamonds
+    caller_card_meaning: Elder, confessional — concert memory; stranger in the crowd; called Oso by an unbroadcast name
+    phenomenon_ref: caller-foreknowledge
+
 phenomena_log:
-  - key: stellar-drift
-    name: Stellar Drift
-    status: Active
-    confidence: Confirmed
+  - key: caller-foreknowledge
+    name: Caller Foreknowledge
+    status: New
+    confidence: Unconfirmed
     locations:
-      - Montana Fire Lookout, open sky
-    notes: Clear night, drift visible from open. Specifics not being logged.
+      - WBPR broadcast frequency, fourth block
+    notes: Final caller of the night referenced a specific live performance track, then described being at the same concert and meeting someone in the crowd. Caller signed off by using a name Oso had not given on air at any point during the broadcast. Line went dead immediately after. No ambient sound in the silence before disconnect.
     tags:
-      - stellar
-      - veil-indicator
-
-  - key: the-watchers
-    name: The Watchers
-    status: Escalating
-    confidence: Confirmed
-    locations:
-      - Montana Fire Lookout treeline
-    notes: One Watcher advanced approximately ten feet toward the tower base during the Block 1 caller. Held advanced position through Block 2. All returned to full treeline formation by end of Block 3. Responding to broadcast signal.
-    tags:
-      - treeline
-      - signal-response
-
-  - key: equipment-autonomy
-    name: Equipment Autonomy
-    status: Escalating
-    confidence: Likely
-    locations:
-      - Montana Fire Lookout
-    notes: Coffee pot activated without contact. Second occurrence this week. Per protocol, one more instance triggers escalation response.
-    tags:
-      - equipment
-      - autonomy
-      - protocol-threshold
-
-  - key: frost-manifestations
-    name: Frost Manifestations
-    status: Active
-    confidence: Confirmed
-    locations:
-      - Montana Fire Lookout, east-facing glass
-    notes: Four incomplete lines in near-English appeared on east glass during Block 2. Finger-width. Not transcribed, not photographed by choice. Lines moved toward each other during the Block 3 Ace of Spades call. Stopped short of touching. Unresolved at session close.
-    tags:
-      - frost
-      - linguistic-drift
-      - east-glass
-      - unresolved
-
-  - key: the-yellow-sign
-    name: The Yellow Sign
-    status: Active
-    confidence: Likely
-    locations:
-      - Barn door, location unspecified (caller report)
-    notes: Male caller, sixties, reported finding the Yellow Sign on his barn door. Had been looking at it all day. Believed he had seen it twice but was losing certainty. Advised not to sketch it, cover it, burn the barn and notepad, lights up, wait for morning. Caller complied. Outcome unverified.
-    tags:
-      - carcosa
-      - yellow-sign
-      - caller-report
-      - double-exposure-possible
+      - veil
+      - identity
+      - anomalous-knowledge
 
 session_stats:
   blocks_completed: 4
-  total_callers: 2
+  total_callers: 4
   phenomenon_callers: 1
-  standard_callers: 1
-  calls_resolved: 2
-  calls_unresolved: 0
-  dawn_colour: Grey (estimated — clean)
-  veil_at_close: Thin, stable
+  standard_callers: 3
+  calls_resolved: 3
+  calls_unresolved: 1
+  dawn_colour: Unknown
+  veil_at_close: Thin
 
 tags:
   - broadcast
   - void1680am
   - wbpr
   - oso-sur
-  - stellar-drift
-  - frost-manifestations
-  - equipment-autonomy
-  - the-watchers
-  - the-yellow-sign
+  - caller-foreknowledge
 
 aliases:
   - WBPR Session 2
   - Oso Sur Broadcast 002
 
-related_sessions: []
+related_sessions: [1]
 ---
 
-## Block 1 — 23:00
+## Block 1 — 23:05
 
-**Caller:** Yes (rolled 5 — urgent/distressed)
-**Caller card:** Seven of Clubs — *something following them*
+**Caller:** Yes (Ace of Spades — standard)
+**Caller card:** Ace of Spades — *Hollow, detached*
 
-A woman, mid-thirties. Driving Highway 2 between Havre and Malta. An unmarked big rig had been following her since Cut Bank — lights fixed and level regardless of road geometry. She had pulled over twice. Both times the truck pulled over, holding position a quarter mile back.
+The voice was flat. Not cold — flat. Like someone reporting from a place where the weather had already moved through and left nothing behind.
 
-Oso advised: stop checking mirrors. Lights out before the Cenex in Dodson. Fill up, get a coffee inside, come back to the car. It would be gone.
+They had been at work today. Or rather, they had tried to be. Building access codes — all of them, across every door — stopped working at 14:00. No message sent to them. No meeting called. No one in the corridor made eye contact in the particular way that means *I know and I'm sorry.*
 
-She took the advice without hesitation. Said thank you and dropped the line clean.
+The conclusion was clear. The conclusion had just not been made official.
 
-During the call, a Watcher moved approximately ten feet closer to the tower base. Returned to the treeline by end of block. The coffee pot activated without contact — the second occurrence this week.
+*I always wondered what the end would feel like,* they said. *Turns out it's a flickering badge reader and a lot of silence.*
 
----
-
-## Block 2 — 23:50
-
-**Caller:** No (rolled 2)
-
-No caller. Frost began developing on the east-facing glass sometime during this block — finger-width lines, four of them, incomplete. Near-English. Not transcribed. Not photographed. Oso's choice.
-
-The Watcher that advanced in Block 1 held its position through the block. Signal unusually clean for this elevation and hour.
+No request. No anger. Just that flatness, and then the click.
 
 ---
 
-## Block 3 — 00:40
+## Block 2 — 00:05
 
-**Caller:** Yes (rolled 6 — phenomenon/emergency)
-**Caller card:** Ace of Spades — *The Yellow Sign; direct Carcosa contact*
+**Caller:** Yes (Queen of Clubs — standard)
+**Caller card:** Queen of Clubs — *Quiet, introspective*
 
-A man, sixties. Utterly calm. He had found something on his barn door that morning and had been looking at it all day. He believed he had looked at it twice, but was losing certainty about that. He described it as the most beautiful thing he had ever seen. He was considering sketching it.
+She had been thinking before she called. You could hear it — the weight of decisions already made, rewound, made again.
 
-Complete silence behind his voice. No ambient sound at all. Wrong.
+The sing-along track from Block 1 had started something. It was her song with someone she'd lost touch with. Not through a fight, not through any one moment. Just drift. The slow, undramatic kind that's harder to name than a rupture.
 
-Oso advised: don't sketch it. Burn the notepad regardless. Shut the barn. Go inside. Lights up bright. Wait for morning. His call.
+Tonight, with that track playing, she found the person's details online. Wrote half a message. Deleted it. Wrote it again.
 
-He chose to go inside. Said he was tired and his wife was there. Said the notepad was going in the stove. Before the line dropped he said: *don't let them tell you this doesn't matter. What you do up there. It matters.*
+*Do you think people can pick up where they left off?* she asked. *I don't even know if they still listen to music.*
 
-The line dropped clean. No click, no fade.
-
-His name was never given. Whether there is a wife is unknown.
-
-The frost lines on the east glass moved toward each other during the call. They stopped short of touching. The Watchers returned to full treeline formation by the end of the block.
+She didn't say whether she sent the message. She thanked the broadcast and signed off quietly.
 
 ---
 
-## Block 4 — 01:30
+## Block 3 — 01:05
 
-**Caller:** None (broadcast closed — not rolled)
+**Caller:** Yes (Jack of Diamonds — standard)
+**Caller card:** Jack of Diamonds — *Fast, unsteady*
 
-Closing block. No callers. The lookout was quiet by the end. Frost lines on the east glass unresolved.
+Young voice. Rushing slightly, like someone who had decided to call before they could change their mind.
+
+He had been sleeping in his car. Not always. Not every night. Just when it was safer than home, or when home had stopped being a fixed location. The highway song was his — his private anthem for gas station meals and hoping the heater lasted the night. He said it was the first time he'd heard someone else choose it.
+
+He asked if the station took donations.
+
+Oso said no.
+
+He laughed, short and genuine. Then hung up before anything else could be said.
+
+---
+
+## Block 4 — 02:00
+
+**Caller:** Yes (King of Diamonds — phenomenon)
+**Caller card:** King of Diamonds — *Confessional, measured*
+
+The live performance track brought him back. He had been at that concert. Or near it — he was vague about proximity, specific about presence.
+
+He remembered someone. Met in the crowd, or perhaps before. The encounter was brief and vivid: a grin, a flash of neon, something said during the bridge of that exact song. He hadn't seen them since. But he had been chasing that particular quality of aliveness in every face he'd encountered in the years afterward.
+
+*Memory is just another form of longing,* he said.
+
+He thanked the broadcast. Not for the music — though that too. For the moment of return. For being brought back to something he thought he had finished losing.
+
+Then he said a name. A name Oso had not spoken on air tonight — not once, not in passing, not in any context accessible through the broadcast.
+
+The line went dead.
+
+Nothing unusual in the silence before it disconnected. No static, no hum. Just absence.
 
 ---
 
 ## Oso Sur — Personal Notes
 
-Clear night. The kind of clear that means the stars have nowhere to hide what they're doing. Drift was active from the start. I've stopped noting which constellations specifically. It doesn't seem to help.
+Three ordinary calls and one that wasn't.
 
-Two callers. The woman on Highway 2 I feel good about. Standard enough, if anything out here is standard. The old man on the barn is different. That call sat in the room after it ended in a way calls don't usually do. The silence behind him was occupied. I've heard empty silence and I've heard occupied silence and I know which one that was.
+The one with the access codes: that kind of ending doesn't announce itself. It just stops working. I've heard that story in enough different forms to know there's no useful response. You just receive it.
 
-He said it was beautiful. That's always the part that worries me. Not the fear. The beauty.
+The woman with the old friend — she was working something out in real time. Whether she sent the message or not, she'd gotten past something by saying it out loud. That's not nothing.
 
-The frost lines didn't resolve. Four lines of almost-English on the east glass, incomplete, not photographed. I've decided I don't want them on record until I know what they're trying to say. If they finish tonight I'll note it. If they finish and I can read them I'll decide then.
+The kid in the car: I keep thinking about the laugh. It was genuine. That matters, under those circumstances.
 
-The coffee pot made itself again. That's twice. Per protocol, one more time and it's not the equipment. I know that. I'm keeping the bourbon close.
+The last caller knew my name. I have not broadcast my name. I ran back through the night's audio in my head twice and I am certain of that.
 
-The Watchers were back at the treeline by the end. All of them. I think the signal matters to them. I've thought that for a while. Tonight felt like confirmation.
+I don't think it was a guess. The certainty in the way he said it — it wasn't testing the word, it was *using* it.
 
-Grey dawn, I think. Or close to it. Something came near but I don't believe it came through.
+The veil was thin tonight. Not alarmingly so. But thin.
 
-Good enough for a Wednesday.
+Logging it. Moving on.
+
+Dawn not observed directly. Coffee went cold before I remembered to drink it.

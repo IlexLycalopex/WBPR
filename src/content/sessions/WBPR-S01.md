@@ -3,146 +3,101 @@ session: 1
 station: WBPR
 call_sign: Oso Sur
 location: Montana Fire Lookout, ~7,200ft
-date: "1974-11-08"
-start_time: "23:47"
-end_time: "02:19"
-duration_minutes: 152
-atmospheric_conditions: Heavy frost on south window by broadcast start; thin parallel lines, near-parallel. More stars than usual. No movement observed. Wind steady from the north-west.
-veil_status: Thin
-veil_intensity: 2
-callers: 2
+date: "1973-10-20"
+start_time: "23:00"
+end_time: "02:15"
+duration_minutes: 195
+atmospheric_conditions: "Cold, clear night. Stars sharp overhead. Equipment warm from pre-broadcast testing. No anomalies at open."
+veil_status: Normal
+veil_intensity: 3
+callers: 4
 
 blocks:
-  - time: "23:47"
+  - time: "23:05"
     prompts:
-      - card: Four of Spades
-        tone: Melancholic
-      - card: Nine of Hearts
-        tone: Peace
-      - card: Jack of Diamonds
-        tone: Urban
-    playlist:
-      - title: The Dazzler
-        artist: Ex:Re
-        url: ""
-        source: ""
-      - title: Scenic World
-        artist: Beirut
-        url: ""
-        source: ""
-      - title: Backside Grind
-        artist: Plan B
-        url: ""
-        source: ""
+      - card: Five of Clubs
+        tone: The one you sing along to every time — what is your favourite bit?
+      - card: Nine of Clubs
+        tone: You are ready to take a walk or go running — what song sets the pace?
+      - card: Three of Clubs
+        tone: An offhand suggestion that became a favourite — who or what recommended it?
+    playlist: []
     caller_type: standard
-    caller_card: Six of Clubs
-    caller_card_meaning: something discovered by accident
+    caller_card: Queen of Diamonds
+    caller_card_meaning: Adult, agitated — friendship on the brink; seditious associations
     phenomenon_ref: ""
 
-  - time: "00:31"
+  - time: "00:00"
     prompts:
-      - card: Five of Hearts
-        tone: Vulnerable
-      - card: Two of Clubs
-        tone: Difficult
-      - card: Eight of Spades
-        tone: "Cinematic, ominous"
-    playlist: []
-    caller_type: none
-    phenomenon_ref: ""
-
-  - time: "01:18"
-    prompts:
-      - card: King of Spades
-        tone: Power in the dark
-      - card: Three of Diamonds
-        tone: Winter
-      - card: Ace of Hearts
-        tone: Something that makes you cry
-    playlist: []
-    caller_type: phenomenon
-    caller_card: Three of Spades
-    caller_card_meaning: something that sounds like the void
-    phenomenon_ref: humming-road
-
-  - time: "02:04"
-    prompts:
-      - card: Seven of Spades
-        tone: Secrets
-      - card: Four of Hearts
-        tone: Safety
+      - card: Four of Diamonds
+        tone: Something with lyrics you quote often — what is the line that grabs you?
+      - card: Seven of Diamonds
+        tone: A song that helps you imagine yourself a villain
       - card: Ten of Diamonds
-        tone: Timeless
+        tone: A song that makes you feel sexy or cool — what scenarios come to mind?
     playlist: []
-    caller_type: none
+    caller_type: standard
+    caller_card: Jack of Spades
+    caller_card_meaning: Young, melancholy — unspoken love; silence as trap
+    phenomenon_ref: ""
+
+  - time: "00:55"
+    prompts:
+      - card: Two of Spades
+        tone: A song that always makes you tear up — what is it that gets you?
+      - card: Six of Spades
+        tone: Summer, late, all the windows open, you are restless — what do you put on?
+      - card: Nine of Spades
+        tone: A song from when your parents were young — how did you discover it?
+    playlist: []
+    caller_type: standard
+    caller_card: Ace of Clubs
+    caller_card_meaning: Ambiguous modulated voice — today's events, portentous; being followed
+    phenomenon_ref: state-surveillance
+
+  - time: "01:50"
+    prompts:
+      - card: Three of Hearts
+        tone: A song from one of the first albums you bought yourself — where did you buy it?
+      - card: Five of Hearts
+        tone: A song that got you through a breakup, romantic or platonic — how does it feel to hear it again?
+      - card: Eight of Hearts
+        tone: A song that makes you feel invincible, or at least like a survivor — why this one?
+    playlist: []
+    caller_type: standard
+    caller_card: King of Hearts
+    caller_card_meaning: Elder, resolved — a life-changing decision; a line not crossed; peace made
     phenomenon_ref: ""
 
 phenomena_log:
-  - key: frost-manifestations
-    name: Frost Manifestations
-    status: Resolved
-    confidence: Confirmed
-    locations:
-      - Montana Fire Lookout
-    notes: South window. Parallel lines. Gone by 02:15.
-    tags:
-      - weather
-      - lookout
-
-  - key: humming-road
-    name: Humming Road (Highway 2)
-    status: Escalating
-    confidence: Confirmed
-    locations:
-      - "Highway 2, Cut Bank to Shelby, MT"
-    notes: Third confirmed caller report. Low frequency hum, felt more than heard. Stopped at 01:52.
-    tags:
-      - highway
-      - sound
-      - escalating
-
-  - key: stellar-drift
-    name: Stellar Drift
+  - key: state-surveillance
+    name: State Surveillance Apparatus
     status: Active
-    confidence: Unconfirmed
+    confidence: Likely
     locations:
-      - Montana Fire Lookout
-    notes: More stars than usual. No movement observed.
+      - Garrison Street subterranean tram level
+    notes: Third-block caller reported being followed through the underground tram system. No badge, no words, only eyes. Caller did not turn around. Reference to broadcast signal as either protective or coincidental. Chose to speak; chose to trust the station.
     tags:
-      - sky
-      - lookout
-
-  - key: the-kept
-    name: The Kept
-    status: Active
-    confidence: Unconfirmed
-    locations:
-      - "Unknown (road, Dakotas/Minnesota region)"
-    notes: Woman caller — calm in a way that may warrant monitoring. Object found in glovebox, eleven-year-old car. Not there that morning.
-    tags:
-      - caller
-      - object
-      - highway
+      - human
+      - political
+      - watchers
 
 session_stats:
   blocks_completed: 4
-  total_callers: 2
-  phenomenon_callers: 1
-  standard_callers: 1
-  calls_resolved: 1
+  total_callers: 4
+  phenomenon_callers: 0
+  standard_callers: 4
+  calls_resolved: 3
   calls_unresolved: 1
-  dawn_colour: Grey-blue (clean)
-  veil_at_close: Thin, stable
+  dawn_colour: Unknown
+  veil_at_close: Normal
 
 tags:
   - broadcast
   - void1680am
   - wbpr
   - oso-sur
-  - highway-loops
-  - humming-road
-  - frost-manifestations
-  - moth-static
+  - state-surveillance
 
 aliases:
   - WBPR Session 1
@@ -151,58 +106,88 @@ aliases:
 related_sessions: []
 ---
 
-## Block 1 — 23:47
+## Block 1 — 23:05
 
-**Caller:** Yes (rolled 4 — standard)
-**Caller card:** Six of Clubs — *something discovered by accident*
+**Caller:** Yes (Queen of Diamonds — standard)
+**Caller card:** Queen of Diamonds — *Agitated, worried*
 
-Female, mid-forties. Flat vowels, Dakotas or Minnesota. Pulled over. Found an object in her glovebox that wasn't hers. Eleven-year-old car. Not there this morning. She didn't describe the object. Oso didn't push. She'd called because the signal came in clean and sudden, cleaner than anything else on the road.
+She called late in the first block. Voice low, measured — trembling not from fear but from the weight of a choice not yet made.
 
-She hung up before it resolved. That's fine. Not everything resolves.
+She asked quietly if Oso had ever watched someone close drift into something radical. Maybe noble, maybe naïve, maybe reckless. She didn't name the person. She didn't have to.
 
----
+Her friend, she said, had been moving toward a seditious circle. Underground meetings. Anti-regime talk. Phrases like *bringing back the true real*. The Caller had believed in this friend once. Now she was calculating the cost of staying loyal — whether love and self-preservation could survive in the same body at the same time.
 
-## Block 2 — 00:31
+She asked for something popular. Something bright. Something she could hide behind. The request played clean over the airwaves, sharp edges buried in the chorus.
 
-**Caller:** No (rolled 2)
-
-The frost on the south window had spread by the end of this block. Still parallel. Still not breathing on it.
+She didn't say whether she'd decided. She didn't say her name.
 
 ---
 
-## Block 3 — 01:18
+## Block 2 — 00:00
 
-**Caller:** Yes (rolled 6 — phenomenon/emergency)
-**Caller card:** Three of Spades — *something that sounds like the void*
+**Caller:** Yes (Jack of Spades — standard)
+**Caller card:** Jack of Spades — *Young, hesitant*
 
-Male, late sixties. Retired forestry. Payphone outside Browning, off Highway 2 between Cut Bank and Shelby. Car stopped on its own. He'd heard the hum first — low frequency, felt more than heard. Got out. Found the payphone. Called WBPR.
+A soft voice. Late teens, early twenties. He tested each word before committing to it, like someone checking ice.
 
-He was calm. The kind of calm that comes from a life outdoors, from knowing that the land does things. He wasn't frightened. That was, in its way, the most unsettling part of the call.
+He asked if love could survive in silence. There was a person he saw often — at the archive, maybe, or across the university plaza — but they had never spoken. He suspected the feeling was mutual. Or maybe he was constructing something out of nothing. Either way, he was trapped: by fear, by the regime, by the unwritten cultural codes that made openness a liability.
 
-Oso walked him through the Highway 2 protocol. Small commerce if there's a figure at the landmark — there wasn't, tonight. Wait for dawn. He said he had coffee in a thermos. He said that was enough.
+*Can you love someone you've never met? And if you do — does it matter?*
 
-He didn't call back. The hum stopped at 01:52 by his estimate.
-
-**Phenomenon logged:** Humming Road (Highway 2, Cut Bank to Shelby) — active, third confirmed caller report. Escalating.
+The call ended mid-sentence. A click before a goodbye. Maybe he got spooked. Maybe he'd already said more than he intended. Somewhere out in the dark, he was still listening.
 
 ---
 
-## Block 4 — 02:04
+## Block 3 — 00:55
 
-**Caller:** No (rolled 1)
+**Caller:** Yes (Ace of Clubs — standard)
+**Caller card:** Ace of Clubs — *Ambiguous, processed*
 
-Quiet block. The frost on the south window resolved completely before the last song ended. No trace of it by 02:15. That's the clean outcome.
+The voice was filtered. Modulated just enough to strip age and gender. Like a signal that had bounced between too many towers on the way in.
+
+They referenced the running track from Block 1. Not by title — by what it had done. They talked about footsteps. Today, they said, someone followed them through the subterranean tram level at Garrison Street. No badge. No words. Just presence, three steps behind, all the way through.
+
+They didn't turn around. Didn't need to.
+
+The song was playing in their earbuds when it happened.
+
+*Maybe it was coincidence,* they said. A pause. Then: *Keep broadcasting. We're out here.*
+
+Click.
+
+No name. No request. But they had chosen to call, and that was not nothing.
+
+---
+
+## Block 4 — 01:50
+
+**Caller:** Yes (King of Hearts — standard)
+**Caller card:** King of Hearts — *Elder, resolved*
+
+A calm voice. The kind that only comes from having lived through something long enough to name it.
+
+He said the breakup song took him back. To the winter of '51. Or maybe '81. He didn't clarify, and Oso didn't press. There had been a person. A decision. A line he hadn't crossed. He had spent the decades since wondering if he should have.
+
+Tonight, he said, he had made peace with it. The voice on the broadcast. That specific song. Something had resolved.
+
+*Sometimes,* he said, *we live long enough to know we made the right mistake.*
+
+He thanked Oso. Then he signed off — not just from the call, but from something older than the call.
 
 ---
 
 ## Oso Sur — Personal Notes
 
-The woman with the object in her glovebox is still out there somewhere. She didn't say what it was. I didn't ask. Some things you leave with the person who found them. She'll call back or she won't.
+Four calls. That is not a quiet night.
 
-The old forestry man on Highway 2 — he knew the land. You could hear it in how he described the hum. Not afraid of it. Just reporting it, the way you'd report weather. I think that's the right response. I think being afraid of it is what it's looking for.
+The woman with the seditious friend is going to have to choose, and she called this station instead of anyone who could actually help her. That tells me something about the options available to her. I didn't offer advice. I'm not sure advice was what she wanted.
 
-Frost on the south window: resolved cleanly. I'll note it but I'm not worried yet. Twice would be worth worrying about.
+The kid in love with a stranger: I have no protocol for that. Some distances close on their own. Some don't. The ones that do usually cost something you weren't expecting.
 
-The stars didn't move tonight. That's a good night.
+The modulated voice was prepared, not scared. There's a difference. Prepared people have already done the calculus. They're calling to document, not to ask. I kept the signal going. That seems to be the correct response.
 
-Dawn came in grey-blue. Clean horizon. I'll take it.
+The old man at the end: the ones who call in already resolved are always the ones who did the hard part alone, in some room years ago, without an audience. He just wanted to say it aloud to someone who would hear it. I can do that much.
+
+Dawn came grey and clean. Stars fading in the usual order.
+
+Nothing unusual in the equipment tonight. Coffee pot stayed off.
