@@ -21,7 +21,19 @@ blocks:
         tone: You are ready to take a walk or go running — what song sets the pace?
       - card: Three of Clubs
         tone: An offhand suggestion that became a favourite — who or what recommended it?
-    playlist: []
+    playlist:
+      - title: Tire Swing
+        artist: Kimya Dawson
+        url: ""
+        source: ""
+      - title: Protector
+        artist: Tourist
+        url: ""
+        source: ""
+      - title: Mexican Wine
+        artist: Fountains of Wayne
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Queen of Diamonds
     caller_card_meaning: Adult, agitated — friendship on the brink; seditious associations
@@ -35,7 +47,19 @@ blocks:
         tone: A song that helps you imagine yourself a villain
       - card: Ten of Diamonds
         tone: A song that makes you feel sexy or cool — what scenarios come to mind?
-    playlist: []
+    playlist:
+      - title: "Beware Of The Beautiful Stranger"
+        artist: Pete Atkin
+        url: ""
+        source: ""
+      - title: "Movie (Never Made)"
+        artist: Silver Mt. Zion
+        url: ""
+        source: ""
+      - title: Burma-Shave
+        artist: Tom Waits
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Jack of Spades
     caller_card_meaning: Young, melancholy — unspoken love; silence as trap
@@ -49,7 +73,19 @@ blocks:
         tone: Summer, late, all the windows open, you are restless — what do you put on?
       - card: Nine of Spades
         tone: A song from when your parents were young — how did you discover it?
-    playlist: []
+    playlist:
+      - title: Bright Horses
+        artist: "Nick Cave & The Bad Seeds"
+        url: ""
+        source: ""
+      - title: Prowler
+        artist: "Bohren & Der Club of Gore"
+        url: ""
+        source: ""
+      - title: "Breathe (In the Air)"
+        artist: Pink Floyd
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Ace of Clubs
     caller_card_meaning: Ambiguous modulated voice — today's events, portentous; being followed
@@ -63,7 +99,19 @@ blocks:
         tone: A song that got you through a breakup, romantic or platonic — how does it feel to hear it again?
       - card: Eight of Hearts
         tone: A song that makes you feel invincible, or at least like a survivor — why this one?
-    playlist: []
+    playlist:
+      - title: After The Curtain
+        artist: Beirut
+        url: ""
+        source: ""
+      - title: "Alone / With You"
+        artist: Daughter
+        url: ""
+        source: ""
+      - title: Sparkplug Minuet
+        artist: Mark Mothersbaugh
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: King of Hearts
     caller_card_meaning: Elder, resolved — a life-changing decision; a line not crossed; peace made

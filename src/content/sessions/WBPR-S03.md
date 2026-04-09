@@ -22,7 +22,19 @@ blocks:
         tone: The first song you think of when you think of someone important to you — who came to mind?
       - card: Ten of Clubs
         tone: The sleaziest song you love — is it liberating, or a dirty secret?
-    playlist: []
+    playlist:
+      - title: Dream
+        artist: Cat Power
+        url: ""
+        source: ""
+      - title: The Hardest Part
+        artist: Olivia Dean
+        url: ""
+        source: ""
+      - title: Black Cherry
+        artist: Goldfrapp
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: King of Spades
     caller_card_meaning: Elder, quietly guilty — lopsided friendship; a debt unpaid in the early days
@@ -36,7 +48,19 @@ blocks:
         tone: You misunderstood the lyrics for years — you think your version is better
       - card: Nine of Diamonds
         tone: You are at the beach — what are you listening to, and does it fire you up or settle you down?
-    playlist: []
+    playlist:
+      - title: "007 (Shanty Town)"
+        artist: "Desmond Dekker & The Aces"
+        url: ""
+        source: ""
+      - title: Abatina
+        artist: Kobo Town
+        url: ""
+        source: ""
+      - title: Candela
+        artist: Buena Vista Social Club
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Queen of Spades
     caller_card_meaning: Adult, controlled — a looping conversation; something said that may have been a warning; "are we being rehearsed?"
@@ -50,7 +74,19 @@ blocks:
         tone: A song about something ending — is it bitter or bittersweet?
       - card: Five of Spades
         tone: The first song you think of when you think of winters as a kid — does winter still feel this way?
-    playlist: []
+    playlist:
+      - title: What He Wrote
+        artist: Laura Marling
+        url: ""
+        source: ""
+      - title: Landfill
+        artist: Daughter
+        url: ""
+        source: ""
+      - title: Come Wind Come Rain
+        artist: Vashti Bunyan
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Ace of Hearts
     caller_card_meaning: Gentle, introspective — new parent or lost parent; request for something sunny that still knows how to grieve
@@ -64,7 +100,19 @@ blocks:
         tone: A song from a band you hid from your parental figure — were you right to?
       - card: Ten of Hearts
         tone: You have been out all night and the sun is rising — what song reinvigorates you for the day?
-    playlist: []
+    playlist:
+      - title: Christobel
+        artist: Joan As Police Woman
+        url: ""
+        source: ""
+      - title: Tekno Love Song
+        artist: CocoRosie
+        url: ""
+        source: ""
+      - title: Until The Morning
+        artist: Thievery Corporation
+        url: ""
+        source: ""
     caller_type: none
     caller_card: ""
     caller_card_meaning: ""

@@ -21,7 +21,15 @@ blocks:
         tone: The new obsession — the thing you listen to every day right now — why is it resonating?
       - card: Eight of Clubs
         tone: The drumbeat that always has you tapping your foot — what is your favourite bit?
-    playlist: []
+    playlist:
+      - title: Golden
+        artist: "HUNTR/X, EJAE, AUDREY NUNA, REI AMI"
+        url: ""
+        source: ""
+      - title: adore u
+        artist: "Fred again.., Obongjayar"
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Ace of Spades
     caller_card_meaning: Ambiguous, hollow — a conclusion arrived at through silence; access revoked

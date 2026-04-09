@@ -47,7 +47,19 @@ blocks:
         tone: A track that feels totally out of place but belongs anyway
       - card: Seven of Diamonds
         tone: A song that helps you imagine yourself a villain
-    playlist: []
+    playlist:
+      - title: Strange Weather
+        artist: Tom Waits
+        url: ""
+        source: ""
+      - title: "Can't Let Go"
+        artist: Caught A Ghost
+        url: ""
+        source: ""
+      - title: The Nothing Changes
+        artist: The Kilimanjaro Darkjazz Ensemble
+        url: ""
+        source: ""
     caller_type: standard
     caller_card: Queen of Diamonds
     caller_card_meaning: Adult, controlled but fracturing — friend following strange signal; remote meeting requested; "if I disappear, tell them I was trying to understand"
@@ -61,7 +73,19 @@ blocks:
         tone: A shadow song — lost or forbidden
       - card: Three of Spades
         tone: One of your shared songs — something you had with someone close — who was it, why this song?
-    playlist: []
+    playlist:
+      - title: Mysterons
+        artist: Portishead
+        url: ""
+        source: ""
+      - title: The Lantern
+        artist: "Boom Bip, Doseone"
+        url: ""
+        source: ""
+      - title: Bones of Ribbon
+        artist: London Grammar
+        url: ""
+        source: ""
     caller_type: phenomenon
     caller_card: King of Clubs
     caller_card_meaning: Elder, watching — today's events as a closing loop; the moon as a recurrence; "you made a different choice last time"
@@ -75,7 +99,19 @@ blocks:
         tone: A song that got you through a breakup, romantic or platonic — how does it feel to hear it again?
       - card: Three of Hearts
         tone: A song from one of the first albums you bought yourself — where did you buy it?
-    playlist: []
+    playlist:
+      - title: Everybody
+        artist: Ezra Collective
+        url: ""
+        source: ""
+      - title: Running If You Call My Name
+        artist: HAIM
+        url: ""
+        source: ""
+      - title: "A Night In Tunisia (Remastered 2005)"
+        artist: "Art Blakey & The Jazz Messengers"
+        url: ""
+        source: ""
     caller_type: phenomenon
     caller_card: Queen of Hearts
     caller_card_meaning: Adult, retrospective — a decision made by not deciding; a train still passing; "say my name next time" — name never given
