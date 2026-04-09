@@ -90,6 +90,9 @@ blocks:
     caller_card: Five of Spades
     caller_card_meaning: Something that sounds like an ending — reality soft at the edges
     phenomenon_ref: the-reversed-town
+    caller_location: "Highway 2 corridor, Montana (town name withheld)"
+    caller_coords: [48.42, -108.20]
+    caller_location_confidence: approximate
 
   - time: "02:05"
     prompts:
@@ -120,6 +123,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout, open sky
+    coords: [48.20, -112.90]
     notes: Configurations visible tonight do not correspond to any chart at the lookout. Not movement — repositioning. The stars appear to be in the correct number but wrong arrangement. Oso did not mention this on air. The Watchers appeared to be oriented upward during Block 1.
     tags:
       - stellar
@@ -132,6 +136,7 @@ phenomena_log:
     confidence: Likely
     locations:
       - Highway 2 corridor, Montana (specific town unspecified by caller)
+    coords: [48.42, -108.20]
     notes: Block 3 caller reported driving through a small town, continuing twenty miles, then looping back and finding the same town — but mirrored. Businesses on the opposite sides of the street. Church facing the wrong direction. She drove through it a third time and it was normal again. Caller was calm. Said she had grown up near that town and knew it well enough to be certain. First confirmed report matching the Reversed Town pattern.
     tags:
       - reversed-town
@@ -145,6 +150,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout, all glass surfaces
+    coords: [48.20, -112.90]
     notes: Heavy frost on all glass by broadcast open. Uniform, no patterning. Resolved normally by 03:00 post-broadcast.
     tags:
       - frost
@@ -157,6 +163,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout treeline
+    coords: [48.20, -112.90]
     notes: Present at standard position throughout. Appeared to orient upward during Block 1 stellar anomaly. Returned to standard horizontal orientation by Block 2. No advance toward the tower.
     tags:
       - treeline

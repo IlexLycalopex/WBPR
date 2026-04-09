@@ -22,14 +22,18 @@ const blockSchema = z.object({
   caller_card: z.string().optional().default(''),
   caller_card_meaning: z.string().optional().default(''),
   phenomenon_ref: z.string().optional().default(''),
+  caller_location: z.string().optional().default(''),
+  caller_coords: z.tuple([z.number(), z.number()]).optional(),   // [lat, lon]
+  caller_location_confidence: z.enum(['precise', 'approximate', 'accent-only', 'unknown']).optional().default('unknown'),
 });
 
 const phenomenonSchema = z.object({
   key: z.string(),
   name: z.string(),
-  status: z.enum(['New', 'Active', 'Escalating', 'Resolved', 'Dormant']),
+  status: z.enum(['New', 'Active', 'Stable', 'Escalating', 'Resolved', 'Dormant']),
   confidence: z.enum(['Unconfirmed', 'Likely', 'Confirmed']),
   locations: z.array(z.string()).optional().default([]),
+  coords: z.tuple([z.number(), z.number()]).optional(),          // [lat, lon] primary map point
   notes: z.string().optional().default(''),
   tags: z.array(z.string()).optional().default([]),
 });

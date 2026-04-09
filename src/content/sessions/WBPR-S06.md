@@ -38,6 +38,9 @@ blocks:
     caller_card: Seven of Clubs
     caller_card_meaning: Something following them
     phenomenon_ref: the-watchers
+    caller_location: "Highway 2, between Havre and Malta, Montana"
+    caller_coords: [48.46, -108.78]
+    caller_location_confidence: approximate
 
   - time: "23:50"
     prompts:
@@ -124,6 +127,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout, open sky
+    coords: [48.20, -112.90]
     notes: Clear night, drift visible from open. Specifics not being logged.
     tags:
       - stellar
@@ -135,6 +139,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout treeline
+    coords: [48.20, -112.90]
     notes: One Watcher advanced approximately ten feet toward the tower base during the Block 1 caller. Held advanced position through Block 2. All returned to full treeline formation by end of Block 3. Responding to broadcast signal.
     tags:
       - treeline
@@ -146,6 +151,7 @@ phenomena_log:
     confidence: Likely
     locations:
       - Montana Fire Lookout
+    coords: [48.20, -112.90]
     notes: Coffee pot activated without contact. Second occurrence this week. Per protocol, one more instance triggers escalation response.
     tags:
       - equipment
@@ -158,6 +164,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout, east-facing glass
+    coords: [48.20, -112.90]
     notes: Four incomplete lines in near-English appeared on east glass during Block 2. Finger-width. Not transcribed, not photographed by choice. Lines moved toward each other during the Block 3 Ace of Spades call. Stopped short of touching. Unresolved at session close.
     tags:
       - frost

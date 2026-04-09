@@ -124,6 +124,7 @@ phenomena_log:
     confidence: Confirmed
     locations:
       - Montana Fire Lookout, north glass
+    coords: [48.20, -112.90]
     notes: First hard frost of the December sessions. Corner icing on north glass at broadcast start. Did not develop further. Resolved by 02:00.
     tags:
       - frost
@@ -149,6 +150,7 @@ phenomena_log:
     confidence: Likely
     locations:
       - Montana Fire Lookout
+    coords: [48.20, -112.90]
     notes: Coffee pot activated without contact during Block 3. Third occurrence. Per protocol, it is no longer the equipment. Oso has not yet acted on this. Monitoring.
     tags:
       - equipment

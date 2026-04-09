@@ -9,6 +9,7 @@ export interface PhenomenonEntry {
   confidence: string;
   notes: string;
   locations: string[];
+  coords?: [number, number];
   tags: string[];
 }
 
@@ -18,8 +19,10 @@ export interface PhenomenonRecord {
   entries: PhenomenonEntry[];
   latestStatus: string;
   latestConfidence: string;
+  latestNotes: string;
   allLocations: string[];
   allTags: string[];
+  coords?: [number, number];   // latest coords, for map rendering
 }
 
 export async function buildPhenomenaIndex(): Promise<Map<string, PhenomenonRecord>> {
@@ -42,6 +45,7 @@ export async function buildPhenomenaIndex(): Promise<Map<string, PhenomenonRecor
         confidence: p.confidence,
         notes: p.notes,
         locations: p.locations,
+        coords: p.coords,
         tags: p.tags,
       };
 
@@ -52,8 +56,10 @@ export async function buildPhenomenaIndex(): Promise<Map<string, PhenomenonRecor
           entries: [],
           latestStatus: p.status,
           latestConfidence: p.confidence,
+          latestNotes: p.notes,
           allLocations: [],
           allTags: [],
+          coords: p.coords,
         });
       }
 
@@ -61,6 +67,8 @@ export async function buildPhenomenaIndex(): Promise<Map<string, PhenomenonRecor
       record.entries.push(entry);
       record.latestStatus = p.status; // last session wins
       record.latestConfidence = p.confidence;
+      record.latestNotes = p.notes;
+      if (p.coords) record.coords = p.coords;
 
       for (const loc of p.locations) {
         if (!record.allLocations.includes(loc)) record.allLocations.push(loc);
