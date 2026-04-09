@@ -47,7 +47,19 @@ blocks:
         tone: Difficult
       - card: Eight of Spades
         tone: "Cinematic, ominous"
-    playlist: []
+    playlist:
+      - title: Keep Your Head Up
+        artist: Ben Howard
+        url: ""
+        source: ""
+      - title: Dash and Blast
+        artist: Yndi Halda
+        url: ""
+        source: ""
+      - title: Pin Bent Light
+        artist: Joanna Newsom
+        url: ""
+        source: ""
     caller_type: none
     phenomenon_ref: ""
 
@@ -59,7 +71,19 @@ blocks:
         tone: Winter
       - card: Ace of Hearts
         tone: Something that makes you cry
-    playlist: []
+    playlist:
+      - title: Last Known Spy
+        artist: Trigg & Gusset
+        url: ""
+        source: ""
+      - title: Soon It Will Be Cold Enough to Snow
+        artist: Emancipator
+        url: ""
+        source: ""
+      - title: Pink Skies
+        artist: Zac Bryant
+        url: ""
+        source: ""
     caller_type: phenomenon
     caller_card: Three of Spades
     caller_card_meaning: something that sounds like the void
@@ -73,7 +97,19 @@ blocks:
         tone: Safety
       - card: Ten of Diamonds
         tone: Timeless
-    playlist: []
+    playlist:
+      - title: What's He Building?
+        artist: Tom Waits
+        url: ""
+        source: ""
+      - title: Sparkplug Minuet
+        artist: Mark Mothersbaugh
+        url: ""
+        source: ""
+      - title: Blue In Green
+        artist: Miles Davis
+        url: ""
+        source: ""
     caller_type: none
     phenomenon_ref: ""
 
