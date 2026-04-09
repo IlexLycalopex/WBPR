@@ -60,7 +60,7 @@ blocks:
         artist: "Bohren & Der Club of Gore"
         url: ""
         source: ""
-    caller_type: urgent
+    caller_type: emergency
     caller_card: King of Diamonds
     caller_card_meaning: Authority figure causing problems
     phenomenon_ref: ""

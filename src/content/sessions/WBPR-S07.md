@@ -34,7 +34,7 @@ blocks:
         artist: "HEALTH, Crystal Castles"
         url: ""
         source: ""
-    caller_type: urgent
+    caller_type: emergency
     caller_card: Eight of Clubs
     caller_card_meaning: Knowledge they cannot unlearn
     phenomenon_ref: ""
