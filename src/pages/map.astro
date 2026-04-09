@@ -73,7 +73,30 @@ for (const session of sorted) {
     if (!m.sessions.includes(session.data.session)) m.sessions.push(session.data.session);
   }
 }
-const phenomenaMarkers = [...phenomenaMap.values()];
+// ─── Split: field markers vs lookout aggregate ───────────────────────────────
+function isLookoutCoords(c: [number, number]) {
+  return c[0] === LOOKOUT[0] && c[1] === LOOKOUT[1];
+}
+
+const fieldMarkers   = [...phenomenaMap.values()].filter(m => !isLookoutCoords(m.coords));
+const lookoutKeys    = new Set([...phenomenaMap.values()].filter(m =>  isLookoutCoords(m.coords)).map(m => m.key));
+
+// Highest-severity status at the lookout right now (for beacon colour)
+const statusOrder = ['Escalating','Active','Stable','New','Dormant','Resolved'];
+const lookoutStatuses = [...phenomenaMap.values()]
+  .filter(m => isLookoutCoords(m.coords))
+  .map(m => m.status);
+const lookoutTopStatus = statusOrder.find(s => lookoutStatuses.includes(s)) ?? 'Active';
+
+// Sessions that contributed lookout-origin phenomena (for session filter)
+const lookoutSessions = new Set<number>();
+for (const session of sorted) {
+  for (const p of session.data.phenomena_log) {
+    if (p.coords && isLookoutCoords(p.coords)) {
+      lookoutSessions.add(session.data.session);
+    }
+  }
+}
 
 // ─── Full phenomena data for detail panels ────────────────────────────────────
 // Build richer records including all session entries
@@ -157,7 +180,7 @@ function fmtDate(d: string) {
       <p>Geographic distribution of phenomena and caller origins, S05–S{String(Math.max(...sessionNumbers)).padStart(2,'0')}. Select a marker to view detail.</p>
     </div>
     <div class="map-header__stats mono">
-      <span>{phenomenaMarkers.length} phenomena plotted</span>
+      <span>{fieldMarkers.length} field phenomena · {lookoutKeys.size} at lookout</span>
       <span>{callerMarkers.length} callers located</span>
       <span>{unlocatedCallers} unlocated</span>
     </div>
@@ -286,35 +309,54 @@ function fmtDate(d: string) {
           );
         })}
 
-        <!-- ─── Broadcast origin ─── -->
+        <!-- ─── Broadcast origin + lookout aggregate ─── -->
         <g class="layer-broadcast" id="broadcast-layer">
           <!-- Animated rings -->
           <circle cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="8" class="broadcast-ring"/>
           <circle cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="8" class="broadcast-ring broadcast-ring--2"/>
           <circle cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="8" class="broadcast-ring broadcast-ring--3"/>
-          <!-- Lookout core -->
+        </g>
+
+        <!-- Lookout marker — clickable aggregate for all lookout-origin phenomena -->
+        <g
+          class={`lookout-group phenom-marker phenom-marker--${lookoutTopStatus.toLowerCase()}`}
+          data-key="lookout"
+          data-session={[...lookoutSessions].join(',')}
+          role="button"
+          tabindex="0"
+          aria-label={`WBPR Lookout — ${lookoutKeys.size} phenomena · ${lookoutTopStatus}`}
+        >
+          <!-- Status halo reflects highest active severity at the lookout -->
           <circle
-            cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="6"
+            cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="18"
+            class={`phenom-aura phenom-aura--${lookoutTopStatus.toLowerCase()}`}
+          />
+          <!-- Beacon core — always amber -->
+          <circle
+            cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="7"
             fill="#d4a574" stroke="#0a0a0a" stroke-width="1.5"
             filter="url(#glow-sm)"
-            class="lookout-marker"
-            data-key="lookout"
           />
-          <circle cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="2" fill="#0a0a0a"/>
+          <circle cx={lx.toFixed(1)} cy={ly.toFixed(1)} r="2.5" fill="#0a0a0a"/>
+          <!-- Phenomenon count badge -->
           <text
-            x={lx.toFixed(1)} y={(ly + 16).toFixed(1)}
+            x={(lx + 10).toFixed(1)} y={(ly - 8).toFixed(1)}
+            font-family="'JetBrains Mono', monospace" font-size="7"
+            fill="#8a6040" letter-spacing="0.06em"
+          >×{lookoutKeys.size}</text>
+          <text
+            x={lx.toFixed(1)} y={(ly + 17).toFixed(1)}
             font-family="'JetBrains Mono', monospace" font-size="7"
             fill="#8a6040" letter-spacing="0.1em" text-anchor="middle"
+            pointer-events="none"
           >WBPR · 7,200ft</text>
         </g>
 
-        <!-- ─── Phenomena markers (data-driven) ─── -->
+        <!-- ─── Field phenomena markers (data-driven, excludes lookout-origin) ─── -->
         <g class="layer-phenomena" id="phenomena-layer">
-          {phenomenaMarkers.map(m => {
+          {fieldMarkers.map(m => {
             const [mx, my] = proj(m.coords);
             const statusClass = m.status.toLowerCase();
-            // Cluster offset for lookout-co-located phenomena
-            const isLookout = m.coords[0] === LOOKOUT[0] && m.coords[1] === LOOKOUT[1];
             return (
               <g
                 class={`phenom-marker phenom-marker--${statusClass}`}
@@ -323,29 +365,15 @@ function fmtDate(d: string) {
                 role="button"
                 tabindex="0"
                 aria-label={`${m.name} — ${m.status}`}
-                style={isLookout ? `--offset-x: ${(mx - 12).toFixed(1)}px; --offset-y: ${(my - 12).toFixed(1)}px` : ''}
               >
-                {/* Aura */}
-                <circle
-                  cx={mx.toFixed(1)} cy={my.toFixed(1)}
-                  r={isLookout ? '12' : '18'}
-                  class={`phenom-aura phenom-aura--${statusClass}`}
-                />
-                {/* Core */}
-                <circle
-                  cx={mx.toFixed(1)} cy={my.toFixed(1)} r="6"
-                  class={`phenom-core phenom-core--${statusClass}`}
-                />
-                {/* Label */}
-                {!isLookout && (
-                  <text
-                    x={mx.toFixed(1)} y={(my - 12).toFixed(1)}
-                    font-family="'JetBrains Mono', monospace" font-size="7"
-                    class={`phenom-label phenom-label--${statusClass}`}
-                    text-anchor="middle"
-                    pointer-events="none"
-                  >{m.name.toUpperCase()}</text>
-                )}
+                <circle cx={mx.toFixed(1)} cy={my.toFixed(1)} r="18" class={`phenom-aura phenom-aura--${statusClass}`}/>
+                <circle cx={mx.toFixed(1)} cy={my.toFixed(1)} r="6"  class={`phenom-core phenom-core--${statusClass}`}/>
+                <text
+                  x={mx.toFixed(1)} y={(my - 12).toFixed(1)}
+                  font-family="'JetBrains Mono', monospace" font-size="7"
+                  class={`phenom-label phenom-label--${statusClass}`}
+                  text-anchor="middle" pointer-events="none"
+                >{m.name.toUpperCase()}</text>
               </g>
             );
           })}
@@ -412,6 +440,67 @@ function fmtDate(d: string) {
       <!-- Empty state -->
       <div class="detail-empty" id="detail-empty">
         <span class="mono">Select a marker</span>
+      </div>
+
+      <!-- Lookout aggregate pane -->
+      <div class="detail-pane" id="pane-lookout" hidden data-key="lookout">
+
+        <button
+          class="scroll-btn scroll-btn--vert scroll-btn--up"
+          data-track="track-lookout"
+          aria-label="Scroll up"
+        >&#x2039;</button>
+
+        <div class="detail-track" id="track-lookout">
+          <div class="detail-content">
+
+            <div class="detail-header">
+              <div class="detail-badges">
+                <span class={`badge badge--${lookoutTopStatus.toLowerCase()}`}>{lookoutTopStatus}</span>
+                <span class="badge badge--geo">Lookout origin</span>
+              </div>
+              <h2 class="detail-name">WBPR · Montana Fire Lookout</h2>
+              <p class="detail-location mono">~7,200ft · {lookoutKeys.size} phenomena logged here</p>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section-label mono">Phenomena at this location</div>
+              {[...lookoutKeys].map(key => {
+                const p = phenomenaDetail.get(key);
+                if (!p) return null;
+                const latest = p.entries[p.entries.length - 1];
+                return (
+                  <div class="lookout-phenom-entry">
+                    <div class="lookout-phenom-header">
+                      <span class={`badge badge--${p.latestStatus.toLowerCase()}`}>{p.latestStatus}</span>
+                      <span class="lookout-phenom-name">{p.name}</span>
+                    </div>
+                    <p class="history-notes">{latest.notes}</p>
+                    <div class="lookout-phenom-sessions">
+                      {p.entries.map(e => (
+                        <a href={`${base}sessions/${e.slug}`} class="session-ref mono">
+                          {sessionLabel(e.session)} · {fmtDate(e.date)}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div class="detail-nav-links">
+              <a href={`${base}sessions`} class="detail-link mono">All sessions →</a>
+            </div>
+
+          </div>
+        </div>
+
+        <button
+          class="scroll-btn scroll-btn--vert scroll-btn--down"
+          data-track="track-lookout"
+          aria-label="Scroll down"
+        >&#x203a;</button>
+
       </div>
 
       <!-- Phenomenon panes (pre-rendered, hidden until selected) -->
@@ -891,6 +980,32 @@ function fmtDate(d: string) {
     margin: 0;
   }
   .history-status { font-size: 0.52rem !important; padding: 0.1rem 0.3rem !important; }
+
+  /* Lookout aggregate pane */
+  .lookout-phenom-entry {
+    margin-bottom: 1.1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border-dim);
+  }
+  .lookout-phenom-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .lookout-phenom-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.35rem;
+  }
+  .lookout-phenom-name {
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+  .lookout-phenom-sessions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.4rem;
+  }
 
   .detail-nav-links {
     padding-top: 0.75rem;
