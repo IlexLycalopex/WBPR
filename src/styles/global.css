@@ -302,3 +302,17 @@ hr {
   h1 { font-size: 1.8rem; }
   .site-header__inner { flex-direction: column; gap: var(--space-md); }
 }
+
+/* Broadcast band */
+
+.broadcast-band {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--color-accent-dim) 35%, var(--color-accent-dim) 65%, transparent 100%);
+}
+
+/* Animations */
+
+@keyframes signal-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
