@@ -151,7 +151,7 @@ phenomena_log:
     confidence: Unconfirmed
     locations:
       - Unknown
-    notes: Female caller, age indeterminate, accent unplaceable. No ambient sound — wrong kind of empty, not silence but absence. Has been listening most nights. Called to ask whether frost patterns on the east window repeat. Knew about the east window without being told. Has been cataloguing similar patterns on glass, still water, and one mirror she no longer owns. Believes a recurring shape is directional. Oso cited Herodotus; she approved the reference and signed off cleanly. No static. No click. Named by Oso: the Collector.
+    notes: Female caller, age indeterminate, accent unplaceable. No ambient sound — wrong kind of empty, not silence but absence. Has been listening most nights. Called to ask whether frost patterns on the east window repeat. Knew about the east window without being told. Has been cataloguing similar patterns on glass, still water, and one mirror she no longer owns. Believes a recurring shape is directional. Oso cited Herodotus; she approved the reference and signed off cleanly. No static. No click. Oso named her the Collector.
     tags:
       - caller-foreknowledge
       - cataloguing
