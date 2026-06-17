@@ -153,6 +153,42 @@ export interface RunState {
   rng: () => number;
 }
 
+// Mechanics for a single block, independent of RunState.blocks bookkeeping —
+// used by the editor's per-block "Roll" assist, which can be invoked for any
+// block in any order without needing a sequential run in progress.
+export function rollBlockMechanics(state: RunState): Omit<BlockResult, 'index'> {
+  if (state.deck.length < 4) {
+    state.deck = shuffle([...state.deck, ...buildDeck()], state.rng);
+  }
+  if (state.tonePool.length < 3) {
+    state.tonePool = shuffle([...state.tonePool, ...TONE_POOL], state.rng);
+  }
+
+  const prompts: PromptDraw[] = Array.from({ length: 3 }, () => ({
+    card: draw(state.deck),
+    tone: draw(state.tonePool),
+  }));
+
+  const roll = rollD6(state.rng);
+  const type = determineCaller(roll);
+  const caller: CallerDraw = { type, roll };
+  if (type !== 'none') {
+    caller.card = draw(state.deck);
+    const phrases = CALLER_PHRASES[type];
+    caller.phrase = phrases[Math.floor(state.rng() * phrases.length)];
+  }
+
+  const ambientRoll = rollD6(state.rng);
+  const ambient = ambientRoll === 6
+    ? AMBIENT_EVENTS[Math.floor(state.rng() * AMBIENT_EVENTS.length)]
+    : null;
+
+  const drift = Math.floor(state.rng() * 3) - 1; // -1, 0, +1
+  state.veilIntensity = Math.min(10, Math.max(1, state.veilIntensity + drift));
+
+  return { prompts, caller, ambient, veilIntensityAfter: state.veilIntensity };
+}
+
 export function initRun(startingVeilIntensity: number, rng: () => number = Math.random): RunState {
   return {
     deck: shuffle(buildDeck(), rng),
