@@ -42,6 +42,14 @@ import Base from '../layouts/Base.astro';
           <span class="field__label mono">Starting Veil Intensity</span>
           <input id="f-veil" type="number" min="1" max="10" value="4" />
         </label>
+        <label class="field">
+          <span class="field__label mono">Block Spacing (minutes)</span>
+          <input id="f-interval" type="number" min="10" max="120" value="55" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Previous Session #</span>
+          <input id="f-prev" type="number" min="0" value="9" />
+        </label>
       </div>
       <button id="btn-open" class="btn btn--primary">Open Broadcast</button>
     </section>
@@ -232,7 +240,10 @@ import Base from '../layouts/Base.astro';
   } from '../utils/ruleset';
 
   let state: RunState | null = null;
-  let meta = { session: 10, callSign: 'Oso Sur', location: '', date: '', start: '23:00', veil: 4 };
+  let meta = {
+    session: 10, callSign: 'Oso Sur', location: '', date: '', start: '23:00',
+    veil: 4, interval: 55, prevSession: 9,
+  };
 
   const $ = (id: string) => document.getElementById(id) as HTMLElement;
 
@@ -243,6 +254,8 @@ import Base from '../layouts/Base.astro';
     meta.date = (document.getElementById('f-date') as HTMLInputElement).value || new Date().toISOString().slice(0, 10);
     meta.start = (document.getElementById('f-start') as HTMLInputElement).value;
     meta.veil = Number((document.getElementById('f-veil') as HTMLInputElement).value) || 4;
+    meta.interval = Number((document.getElementById('f-interval') as HTMLInputElement).value) || 55;
+    meta.prevSession = Number((document.getElementById('f-prev') as HTMLInputElement).value) || 0;
 
     state = initRun(meta.veil);
     $('blocks-log').innerHTML = '';
@@ -296,42 +309,156 @@ import Base from '../layouts/Base.astro';
     $('output-section').hidden = false;
   });
 
+  // --- time helpers (sessions commonly run ~23:00–02:00, crossing midnight) ---
+  function parseTime(t: string): number {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  }
+  function formatTime(mins: number): string {
+    const wrapped = ((mins % 1440) + 1440) % 1440;
+    const h = Math.floor(wrapped / 60);
+    const m = wrapped % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  }
+  function slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[—–]/g, '-')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .slice(0, 48);
+  }
+  const callSignSlug = () => slugify(meta.callSign) || 'caller';
+
   function buildLog(s: RunState, stats: ReturnType<typeof computeStats>) {
+    const startMins = parseTime(meta.start || '23:00');
+    const blockTimes = s.blocks.map((_, i) => formatTime(startMins + 5 + i * meta.interval));
+    const closeMins = startMins + 5 + (s.blocks.length - 1) * meta.interval + 25;
+    const endTime = formatTime(closeMins);
+    const durationMinutes = closeMins - startMins;
+
+    const phenomenonBlocks = s.blocks.filter(b => b.caller.type === 'phenomenon');
+    const phenomenonKeys = phenomenonBlocks.map(b => slugify(b.caller.phrase ?? `phenomenon-block-${b.index}`));
+
     const lines: string[] = [];
     lines.push('---');
     lines.push(`session: ${meta.session}`);
     lines.push('station: WBPR');
     lines.push(`call_sign: ${meta.callSign}`);
     lines.push(`location: ${meta.location}`);
+    lines.push('# coordinates: [0.00, 0.00] # TODO: add [lat, lon] if known');
     lines.push(`date: "${meta.date}"`);
     lines.push(`start_time: "${meta.start}"`);
+    lines.push(`end_time: "${endTime}" # TODO: confirm actual sign-off time`);
+    lines.push(`duration_minutes: ${durationMinutes} # TODO: confirm against end_time`);
+    lines.push('atmospheric_conditions: "TODO — describe weather/sky/equipment at broadcast open"');
     lines.push(`veil_status: ${veilStatusFor(s.veilIntensity)}`);
     lines.push(`veil_intensity: ${s.veilIntensity}`);
     lines.push(`callers: ${stats.total_callers}`);
     lines.push('');
     lines.push('blocks:');
-    for (const b of s.blocks) {
-      lines.push(`  - block: ${b.index}`);
+    s.blocks.forEach((b, i) => {
+      lines.push(`  - time: "${blockTimes[i]}"`);
       lines.push('    prompts:');
       for (const p of b.prompts) {
         lines.push(`      - card: ${p.card}`);
         lines.push(`        tone: ${p.tone}`);
       }
+      lines.push('    playlist:');
+      lines.push('      - title: "" # TODO: track 1');
+      lines.push('        artist: ""');
+      lines.push('        url: ""');
+      lines.push('        source: ""');
+      lines.push('      - title: "" # TODO: track 2');
+      lines.push('        artist: ""');
+      lines.push('        url: ""');
+      lines.push('        source: ""');
+      lines.push('      - title: "" # TODO: track 3');
+      lines.push('        artist: ""');
+      lines.push('        url: ""');
+      lines.push('        source: ""');
       lines.push(`    caller_type: ${b.caller.type}`);
       lines.push(`    caller_card: ${b.caller.card ?? ''}`);
       lines.push(`    caller_card_meaning: ${b.caller.phrase ?? ''}`);
-      lines.push(`    ambient_event: ${b.ambient ?? ''}`);
-      lines.push(`    veil_intensity_after: ${b.veilIntensityAfter}`);
+      if (b.ambient) lines.push(`    # ambient_event (not in schema, fold into notes): ${b.ambient}`);
+      lines.push(`    phenomenon_ref: ${b.caller.type === 'phenomenon' ? phenomenonKeys[phenomenonBlocks.indexOf(b)] : ''}`);
+      lines.push('    caller_location: "TODO" # e.g. "Highway 2, between X and Y, Montana"');
+      lines.push('    # caller_coords: [0.00, 0.00] # TODO: add if location is precise');
+      lines.push('    caller_location_confidence: unknown # precise | approximate | accent-only | unknown');
+    });
+    lines.push('');
+    lines.push('phenomena_log:');
+    if (phenomenonBlocks.length === 0) {
+      lines.push('  [] # no phenomenon-type callers this session');
+    } else {
+      phenomenonBlocks.forEach((b, i) => {
+        lines.push(`  - key: ${phenomenonKeys[i]}`);
+        lines.push(`    name: "TODO — name this phenomenon (oracle: ${b.caller.phrase})"`);
+        lines.push('    status: New # New | Active | Stable | Escalating | Resolved | Dormant');
+        lines.push('    confidence: Unconfirmed # Unconfirmed | Likely | Confirmed');
+        lines.push('    locations:');
+        lines.push('      - "TODO"');
+        lines.push('    # coords: [0.00, 0.00]');
+        lines.push(`    notes: "TODO — describe what the caller reported, building from the oracle phrase: '${b.caller.phrase}'"`);
+        lines.push('    tags:');
+        lines.push('      - veil');
+      });
     }
     lines.push('');
     lines.push('session_stats:');
     lines.push(`  blocks_completed: ${stats.blocks_completed}`);
     lines.push(`  total_callers: ${stats.total_callers}`);
-    lines.push(`  standard_callers: ${stats.standard_callers}`);
-    lines.push(`  emergency_callers: ${stats.emergency_callers}`);
     lines.push(`  phenomenon_callers: ${stats.phenomenon_callers}`);
+    lines.push(`  standard_callers: ${stats.standard_callers + stats.emergency_callers}`);
+    lines.push(`  calls_resolved: ${stats.total_callers} # TODO: adjust once narrative is written`);
+    lines.push('  calls_unresolved: 0 # TODO: adjust once narrative is written');
+    lines.push('  dawn_colour: "TODO"');
     lines.push(`  veil_at_close: ${stats.veil_at_close}`);
+    lines.push('');
+    lines.push('tags:');
+    lines.push('  - broadcast');
+    lines.push('  - void1680am');
+    lines.push('  - wbpr');
+    lines.push(`  - ${callSignSlug()}`);
+    lines.push('  # - TODO: add a tag per phenomenon/theme that emerged');
+    lines.push('');
+    lines.push('aliases:');
+    lines.push(`  - WBPR Session ${meta.session}`);
+    lines.push(`  - ${meta.callSign} Broadcast ${String(meta.session).padStart(3, '0')}`);
+    lines.push('');
+    lines.push(`related_sessions: [${meta.prevSession > 0 ? meta.prevSession : ''}]`);
     lines.push('---');
+    lines.push('');
+
+    s.blocks.forEach((b, i) => {
+      lines.push(`## Block ${b.index} — ${blockTimes[i]}`);
+      lines.push('');
+      if (b.caller.type === 'none') {
+        lines.push(`**Caller:** No (rolled ${b.caller.roll})`);
+        lines.push('');
+        lines.push('TODO — quiet block. Note anything that happened with the signal, equipment, or atmosphere.');
+      } else {
+        lines.push(`**Caller:** Yes (rolled ${b.caller.roll} — ${b.caller.type})`);
+        lines.push(`**Caller card:** ${b.caller.card} — *${b.caller.phrase}*`);
+        lines.push('');
+        lines.push(`TODO — write the call. Oracle seed: "${b.caller.phrase}". Who called, what they needed or reported, how Oso responded, how it ended.`);
+      }
+      if (b.ambient) {
+        lines.push('');
+        lines.push(`TODO — ambient event to weave in: ${b.ambient}`);
+      }
+      lines.push('');
+      lines.push('---');
+      lines.push('');
+    });
+
+    lines.push(`## ${meta.callSign} — Personal Notes`);
+    lines.push('');
+    lines.push('TODO — closing reflections: one beat per caller, the veil drift across the night, any unresolved threads to carry into the next session.');
+    lines.push('');
+
     return lines.join('\n');
   }
 
