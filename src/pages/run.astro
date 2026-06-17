@@ -1,0 +1,353 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Run a Broadcast" description="Bare mechanical executor for the Void1080AM ruleset — card draws, caller rolls, and veil tracking, no narrative.">
+
+  <div class="container">
+    <header class="page-header">
+      <div class="eyebrow mono">WBPR 1680 AM &middot; Void1080AM Ruleset Executor</div>
+      <h1>Run a Broadcast</h1>
+      <p class="page-header__sub">
+        Rolls the dice and draws the cards. No DJ, no callers' voices, no prose —
+        just the mechanics: caller rolls, oracle cards, ambient events, veil drift.
+        Run it live, then write the session around what it gives you.
+      </p>
+    </header>
+
+    <section class="setup-section">
+      <h2 class="section-label mono">Session Setup</h2>
+      <div class="setup-grid">
+        <label class="field">
+          <span class="field__label mono">Session #</span>
+          <input id="f-session" type="number" min="1" value="10" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Call Sign</span>
+          <input id="f-callsign" type="text" value="Oso Sur" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Location</span>
+          <input id="f-location" type="text" value="Montana Fire Lookout, ~7,200ft" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Date</span>
+          <input id="f-date" type="date" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Start Time</span>
+          <input id="f-start" type="time" value="23:00" />
+        </label>
+        <label class="field">
+          <span class="field__label mono">Starting Veil Intensity</span>
+          <input id="f-veil" type="number" min="1" max="10" value="4" />
+        </label>
+      </div>
+      <button id="btn-open" class="btn btn--primary">Open Broadcast</button>
+    </section>
+
+    <section class="run-section" id="run-section" hidden>
+      <h2 class="section-label mono">Live Log</h2>
+      <div class="run-status mono" id="run-status"></div>
+      <div id="blocks-log"></div>
+      <button id="btn-block" class="btn btn--primary">Run Next Block</button>
+      <button id="btn-close" class="btn" hidden>Close Broadcast</button>
+    </section>
+
+    <section class="output-section" id="output-section" hidden>
+      <h2 class="section-label mono">Session Log Output</h2>
+      <p class="output-desc">
+        Structured, schema-matching front matter. Drop it into
+        <code>src/content/sessions/</code> and write the narrative around it, or leave it bare.
+      </p>
+      <textarea id="output-text" class="output-text mono" readonly rows="24"></textarea>
+      <div class="output-actions">
+        <button id="btn-copy" class="btn">Copy</button>
+        <button id="btn-download" class="btn">Download .md</button>
+      </div>
+    </section>
+  </div>
+
+</Base>
+
+<style>
+  .page-header {
+    padding: var(--space-2xl) 0 var(--space-xl);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--space-2xl);
+  }
+  .eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-accent-dim);
+    margin-bottom: var(--space-md);
+  }
+  .page-header h1 { font-size: 2.2rem; margin-bottom: var(--space-md); }
+  .page-header__sub {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    max-width: 600px;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: var(--space-lg);
+    font-weight: 400;
+  }
+
+  .setup-section, .run-section, .output-section {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .field { display: flex; flex-direction: column; gap: var(--space-xs); }
+  .field__label {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+  }
+  .field input {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: var(--space-sm);
+  }
+  .field input:focus { outline: 1px solid var(--color-accent-dim); }
+
+  .btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-lg);
+    cursor: pointer;
+    transition: border-color var(--transition), color var(--transition);
+    margin-right: var(--space-sm);
+  }
+  .btn:hover:not(:disabled) { border-color: var(--color-accent-dim); color: var(--color-accent); }
+  .btn:disabled { opacity: 0.35; cursor: default; }
+  .btn--primary { color: var(--color-accent); border-color: var(--color-accent-dim); }
+
+  .run-status {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+  }
+
+  .block-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+  }
+
+  .block-card h3 {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: var(--space-sm);
+  }
+
+  .prompt-row {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 2px;
+  }
+  .prompt-row .card-name { color: var(--color-text); }
+
+  .caller-row {
+    margin-top: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--color-border-dim);
+    font-size: 0.85rem;
+  }
+  .caller-row.caller--standard { color: var(--color-caller-standard); }
+  .caller-row.caller--emergency { color: var(--color-caller-emergency); }
+  .caller-row.caller--phenomenon { color: var(--color-caller-phenomenon); }
+  .caller-row.caller--none { color: var(--color-text-dim); }
+
+  .ambient-row {
+    margin-top: var(--space-xs);
+    font-size: 0.78rem;
+    color: var(--color-text-dim);
+    font-style: italic;
+  }
+
+  .veil-row {
+    margin-top: var(--space-xs);
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+  }
+
+  .output-desc {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .output-text {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: 0.78rem;
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    resize: vertical;
+  }
+</style>
+
+<script>
+  import {
+    initRun,
+    runBlock,
+    computeStats,
+    veilStatusFor,
+    type RunState,
+    type BlockResult,
+  } from '../utils/ruleset';
+
+  let state: RunState | null = null;
+  let meta = { session: 10, callSign: 'Oso Sur', location: '', date: '', start: '23:00', veil: 4 };
+
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+
+  $('btn-open').addEventListener('click', () => {
+    meta.session = Number((document.getElementById('f-session') as HTMLInputElement).value) || 1;
+    meta.callSign = (document.getElementById('f-callsign') as HTMLInputElement).value;
+    meta.location = (document.getElementById('f-location') as HTMLInputElement).value;
+    meta.date = (document.getElementById('f-date') as HTMLInputElement).value || new Date().toISOString().slice(0, 10);
+    meta.start = (document.getElementById('f-start') as HTMLInputElement).value;
+    meta.veil = Number((document.getElementById('f-veil') as HTMLInputElement).value) || 4;
+
+    state = initRun(meta.veil);
+    $('blocks-log').innerHTML = '';
+    $('run-section').hidden = false;
+    $('output-section').hidden = true;
+    ($('btn-block') as HTMLButtonElement).disabled = false;
+    $('btn-close').hidden = true;
+    updateStatus();
+  });
+
+  function updateStatus() {
+    if (!state) return;
+    const status = veilStatusFor(state.veilIntensity);
+    $('run-status').textContent =
+      `Broadcast open — veil intensity ${state.veilIntensity}/10 (${status}) — block ${state.blocks.length}/4 complete.`;
+  }
+
+  function renderBlock(b: BlockResult) {
+    const callerLabel = b.caller.type === 'none'
+      ? `No caller (rolled ${b.caller.roll}).`
+      : `Caller (rolled ${b.caller.roll} — ${b.caller.type}): ${b.caller.card} — ${b.caller.phrase}`;
+
+    const div = document.createElement('div');
+    div.className = 'block-card';
+    div.innerHTML = `
+      <h3>Block ${b.index}</h3>
+      ${b.prompts.map(p => `<div class="prompt-row"><span class="card-name">${p.card}</span> — ${p.tone}</div>`).join('')}
+      <div class="caller-row caller--${b.caller.type}">${callerLabel}</div>
+      ${b.ambient ? `<div class="ambient-row">${b.ambient}</div>` : ''}
+      <div class="veil-row">Veil intensity after block: ${b.veilIntensityAfter}/10</div>
+    `;
+    $('blocks-log').appendChild(div);
+  }
+
+  $('btn-block').addEventListener('click', () => {
+    if (!state) return;
+    const result = runBlock(state);
+    renderBlock(result);
+    updateStatus();
+    if (state.blocks.length >= 4) {
+      ($('btn-block') as HTMLButtonElement).disabled = true;
+      $('btn-close').hidden = false;
+    }
+  });
+
+  $('btn-close').addEventListener('click', () => {
+    if (!state) return;
+    const stats = computeStats(state);
+    const text = buildLog(state, stats);
+    (document.getElementById('output-text') as HTMLTextAreaElement).value = text;
+    $('output-section').hidden = false;
+  });
+
+  function buildLog(s: RunState, stats: ReturnType<typeof computeStats>) {
+    const lines: string[] = [];
+    lines.push('---');
+    lines.push(`session: ${meta.session}`);
+    lines.push('station: WBPR');
+    lines.push(`call_sign: ${meta.callSign}`);
+    lines.push(`location: ${meta.location}`);
+    lines.push(`date: "${meta.date}"`);
+    lines.push(`start_time: "${meta.start}"`);
+    lines.push(`veil_status: ${veilStatusFor(s.veilIntensity)}`);
+    lines.push(`veil_intensity: ${s.veilIntensity}`);
+    lines.push(`callers: ${stats.total_callers}`);
+    lines.push('');
+    lines.push('blocks:');
+    for (const b of s.blocks) {
+      lines.push(`  - block: ${b.index}`);
+      lines.push('    prompts:');
+      for (const p of b.prompts) {
+        lines.push(`      - card: ${p.card}`);
+        lines.push(`        tone: ${p.tone}`);
+      }
+      lines.push(`    caller_type: ${b.caller.type}`);
+      lines.push(`    caller_card: ${b.caller.card ?? ''}`);
+      lines.push(`    caller_card_meaning: ${b.caller.phrase ?? ''}`);
+      lines.push(`    ambient_event: ${b.ambient ?? ''}`);
+      lines.push(`    veil_intensity_after: ${b.veilIntensityAfter}`);
+    }
+    lines.push('');
+    lines.push('session_stats:');
+    lines.push(`  blocks_completed: ${stats.blocks_completed}`);
+    lines.push(`  total_callers: ${stats.total_callers}`);
+    lines.push(`  standard_callers: ${stats.standard_callers}`);
+    lines.push(`  emergency_callers: ${stats.emergency_callers}`);
+    lines.push(`  phenomenon_callers: ${stats.phenomenon_callers}`);
+    lines.push(`  veil_at_close: ${stats.veil_at_close}`);
+    lines.push('---');
+    return lines.join('\n');
+  }
+
+  $('btn-copy').addEventListener('click', async () => {
+    const ta = document.getElementById('output-text') as HTMLTextAreaElement;
+    await navigator.clipboard.writeText(ta.value);
+  });
+
+  $('btn-download').addEventListener('click', () => {
+    const ta = document.getElementById('output-text') as HTMLTextAreaElement;
+    const blob = new Blob([ta.value], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `WBPR-S${String(meta.session).padStart(2, '0')}-raw.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
